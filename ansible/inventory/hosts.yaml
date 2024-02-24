@@ -1,0 +1,14 @@
+---
+kubernetes:
+  children:
+    controllers:
+      hosts:
+        "odroid-01":
+          ansible_user: "durden"
+          ansible_host: "192.168.1.201"
+        "odroid-02":
+          ansible_user: "durden"
+          ansible_host: "192.168.1.202"
+        "odroid-03":
+          ansible_user: "durden"
+          ansible_host: "192.168.1.203"
