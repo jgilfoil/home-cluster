@@ -29,6 +29,7 @@ spec:
       namespace: storage
   values:
     csi:
+      enableCephfsDriver: false
       cephFSKernelMountOptions: ms_mode=prefer-crc
       enableLiveness: true
       serviceMonitor:
