@@ -12,6 +12,7 @@ resources:
   - ./grafana.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
+  - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
   - ./metrics-server.yaml
   - ./openebs.yaml
