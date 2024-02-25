@@ -26,39 +26,41 @@ spec:
   values:
     controllers:
       main:
-        image:
-          repository: quay.io/minio/minio
-          tag: RELEASE.2023-05-04T21-44-30Z
-        env:
-          TZ: America/Denver
-          MINIO_UPDATE: "off"
-          MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
-          MINIO_SERVER_URL: https://s3.${SECRET_DOMAIN}
-        envFrom:
-          - secretRef:
-              name: minio-secret
-        args: ["server", "/data", "--console-address", ":9001"]
-        resources:
-          requests:
-            memory: 100Mi
-            cpu: 100m
-          limits:
-            memory: 750Mi
-          # probes:
-          #   liveness: &probes
-          #     enabled: true
-          #     custom: true
-          #     spec:
-          #       httpGet:
-          #         path: /minio/health/live
-          #         port: 9000
-          #       initialDelaySeconds: 0
-          #       periodSeconds: 10
-          #       timeoutSeconds: 1
-          #       failureThreshold: 3
-          #   readiness: *probes
-          startup:
-            enabled: false
+        containers:
+          main:
+            image:
+              repository: quay.io/minio/minio
+              tag: RELEASE.2023-05-04T21-44-30Z
+            env:
+              TZ: America/Denver
+              MINIO_UPDATE: "off"
+              MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
+              MINIO_SERVER_URL: https://s3.${SECRET_DOMAIN}
+            envFrom:
+              - secretRef:
+                  name: minio-secret
+            args: ["server", "/data", "--console-address", ":9001"]
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 100m
+              limits:
+                memory: 750Mi
+              # probes:
+              #   liveness: &probes
+              #     enabled: true
+              #     custom: true
+              #     spec:
+              #       httpGet:
+              #         path: /minio/health/live
+              #         port: 9000
+              #       initialDelaySeconds: 0
+              #       periodSeconds: 10
+              #       timeoutSeconds: 1
+              #       failureThreshold: 3
+              #   readiness: *probes
+              startup:
+                enabled: false
     service:
       main:
         enabled: true
