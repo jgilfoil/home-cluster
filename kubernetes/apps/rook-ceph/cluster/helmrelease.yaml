@@ -107,12 +107,12 @@ spec:
             cpu: "500m"
             memory: "4Gi"
         prepareosd:
-          limits:
-            cpu: "500m"
-            memory: "200Mi"
+        #   limits:
+        #     cpu: "1000m"
+        #     memory: "200Mi"
           requests:
             cpu: "500m"
-            memory: "50Mi"
+            memory: "500Mi"
         mgr-sidecar:
           limits:
             cpu: "500m"
@@ -168,5 +168,6 @@ spec:
       name: csi-ceph-blockpool
       isDefault: false
       deletionPolicy: Delete
-    cephFileSystems: []
+    cephFileSystems:
+
     cephObjectStores: []
