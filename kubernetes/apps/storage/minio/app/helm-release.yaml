@@ -80,6 +80,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
+                  name: main
                   port: 9001
         tls:
           - hosts:
@@ -93,6 +94,7 @@ spec:
               - path: /
                 pathType: Prefix
                 service:
+                  name: api
                   port: 9000
         tls:
           - hosts:
