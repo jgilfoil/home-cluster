@@ -68,13 +68,13 @@ spec:
         nodes:
           - name: odroid-01
             devices:
-              - name: /dev/sda
+              - name: sda
           - name: odroid-02
             devices:
-              - name: /dev/sda
+              - name: sda
           - name: odroid-03
             devices:
-              - name: /dev/sda
+              - name: sda
       placement:
         mgr: &placement
           nodeAffinity:
