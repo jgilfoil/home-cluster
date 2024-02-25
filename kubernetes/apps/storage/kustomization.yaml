@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./openebs/ks.yaml
   - ./volsync/ks.yaml
+  - ./minio/ks.yaml
