@@ -14,7 +14,7 @@ bootstrap_node_inventory:
     address: 10.10.10.101
     controller: false
     ssh_user: fake
-bootstrap_dns_servers: ["1.1.1.1"]
+bootstrap_dns_servers: ["1.1.1.1", "8.8.8.8"]
 bootstrap_search_domain: "fake"
 bootstrap_pod_network: 10.42.0.0/16,fd7f:8f5:e87c:a::/64
 bootstrap_service_network: 10.43.0.0/16,fd7f:8f5:e87c:e::/112
@@ -32,7 +32,7 @@ bootstrap_cloudflare:
   token: take
   acme:
     email: fake@example.com
-    production: false
+    production: true
   tunnel:
     account_id: fake
     id: fake

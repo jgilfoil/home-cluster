@@ -21,7 +21,6 @@ jobs:
         config-files:
           - k3s-ipv4
           - k3s-ipv6
-          - talos
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,13 +83,6 @@ jobs:
       - name: Run configure task
         shell: bash
         run: task configure --yes
-
-      - name: Run Talos tasks
-        if: ${{ startsWith(matrix.config-files, 'talos') }}
-        shell: bash
-        run: |
-          task talos:bootstrap-gensecret
-          task talos:bootstrap-genconfig
 
       - name: Run Ansible tasks
         if: ${{ startsWith(matrix.config-files, 'k3s') }}

@@ -32,7 +32,7 @@ bootstrap_cloudflare:
   token: take
   acme:
     email: fake@example.com
-    production: false
+    production: true
   tunnel:
     account_id: fake
     id: fake
