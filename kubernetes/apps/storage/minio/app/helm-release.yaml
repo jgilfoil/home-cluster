@@ -1,10 +1,11 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: minio
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
       chart: app-template
@@ -14,7 +15,6 @@ spec:
         name: bjw-s
         namespace: flux-system
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
@@ -26,89 +26,91 @@ spec:
   values:
     controllers:
       main:
+        annotations:
+          reloader.stakater.com/auto: "true"
         containers:
           main:
             image:
               repository: quay.io/minio/minio
-              tag: RELEASE.2023-05-04T21-44-30Z
+              tag: RELEASE.2024-02-24T17-11-14Z@sha256:a23f6de6bd0f7601cbda132e940a9f325ae127ebe634d79eb0a8df5d6b713859
             env:
-              TZ: America/Denver
-              MINIO_UPDATE: "off"
+              MINIO_API_CORS_ALLOW_ORIGIN: https://minio.${SECRET_DOMAIN},https://s3.${SECRET_DOMAIN}
               MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
+              MINIO_PROMETHEUS_JOB_ID: minio
+              MINIO_PROMETHEUS_URL: https://prometheus.${SECRET_DOMAIN}
+              MINIO_PROMETHEUS_AUTH_TYPE: public
               MINIO_SERVER_URL: https://s3.${SECRET_DOMAIN}
+              MINIO_UPDATE: "off"
             envFrom:
               - secretRef:
                   name: minio-secret
-            args: ["server", "/data", "--console-address", ":9001"]
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 100m
-              limits:
-                memory: 750Mi
-              # probes:
-              #   liveness: &probes
-              #     enabled: true
-              #     custom: true
-              #     spec:
-              #       httpGet:
-              #         path: /minio/health/live
-              #         port: 9000
-              #       initialDelaySeconds: 0
-              #       periodSeconds: 10
-              #       timeoutSeconds: 1
-              #       failureThreshold: 3
-              #   readiness: *probes
+            args:
+              - server
+              - /data
+              - --console-address
+              - :9001
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /minio/health/live
+                    port: 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
+              readiness: *probes
               startup:
                 enabled: false
+            securityContext:
+              runAsUser: 1024
+              runAsGroup: 100
+              fsGroup: 100
+              fsGroupChangePolicy: OnRootMismatch
+              supplementalGroups: [100]
     service:
       main:
-        enabled: true
         ports:
           http:
             port: 9001
-          api:
-            enabled: true
+          s3:
             port: 9000
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: s3
+            scheme: http
+            path: /minio/v2/metrics/cluster
+            interval: 1m
+            scrapeTimeout: 10s
     ingress:
       main:
         enabled: true
-        ClassName: internal
+        className: internal
         hosts:
-          - host: &host minio.${SECRET_DOMAIN}
+          - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
                 service:
                   name: main
-                  port: 9001
+                  port: http
+          - host: &s3Host s3.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: s3
         tls:
           - hosts:
               - *host
-      s3:
-        enabled: true
-        className: internal
-        hosts:
-          - host: &s3host s3.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  name: api
-                  port: 9000
-        tls:
-          - hosts:
-              - *s3host
-    pod:
-      securityContext:
-        runAsUser: 1024
-        runAsGroup: 100
-        fsGroup: 100
-        fsGroupChangePolicy: "OnRootMismatch"
-        supplementalGroups:
-          - 100
+              - *s3Host
     persistence:
       config:
-        enabled: true
-        existingClaim: minio-nfs
-        mountPath: /data
+        type: nfs
+        server: 192.168.1.33
+        path: /volume10/Minio
+        globalMounts:
+          - path: /data
