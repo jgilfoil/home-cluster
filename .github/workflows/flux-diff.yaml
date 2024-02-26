@@ -47,7 +47,7 @@ jobs:
             --all-namespaces
             --sources "home-kubernetes"
             --output-file diff.patch
-            --debug
+            --log-level DEBUG
 
       - name: Generate Diff
         id: diff

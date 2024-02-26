@@ -6,4 +6,3 @@ resources:
   - ./pvcs.yaml
   - ./helmrelease.yaml
   - ../../../../templates/volsync
- 
