@@ -62,7 +62,7 @@ spec:
             command:
               - sh
               - -c
-              - if [ "$(wget -q -O- https://ipinfo.io/country)" == "NO" ]; then echo "NO"; else echo "not NO"; fi
+              - 'if [ "$(wget -q -O- https://ipinfo.io/country)" == "NO" ]; then echo "NO"; else echo "not NO"; fi'
           initialDelaySeconds: 30
           periodSeconds: 60
           failureThreshold: 3
