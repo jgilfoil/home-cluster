@@ -116,11 +116,9 @@ spec:
       tmp:
         type: emptyDir
       media:
-        enabled: true
         type: nfs
-        server: 
-          nfs: "192.168.1.33"
-          path: /volume2/Media/
+        server: "192.168.1.33"
+        path: /volume2/Media/
         globalMounts:
           - path: /media
             readOnly: true
