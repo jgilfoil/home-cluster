@@ -15,6 +15,8 @@ kubeconform_args=(
     "Secret"
     "-skip"
     "ReplicationDestination"
+    "-skip"
+    "ReplicationSource"
     "-schema-location"
     "default"
     "-schema-location"
