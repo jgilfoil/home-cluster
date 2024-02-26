@@ -5,7 +5,7 @@ metadata:
   name: vpn-gateway
   labels:
     # Avoid variable substitution of shell variables bellow
-    kustomize.toolkit.fluxcd.io/substitute: disabled
+    # kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   interval: 5m
   chart:
