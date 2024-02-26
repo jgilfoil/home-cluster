@@ -83,22 +83,17 @@ spec:
     service:
       main:
         type: LoadBalancer
-        externalIPs:
-          - "${SVC_PLEX_ADDR}"
-        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: 192.168.1.210
         ports:
           http:
             port: 32400
-        annotations:
-          # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          metallb.universe.tf/loadBalancerIPs: "${SVC_PLEX_ADDR}"
     ingress:
       main:
         enabled: true
-        ClassName: external
+        ClassName: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
+          # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         hosts:
           - host: &host "plex.${SECRET_DOMAIN}"
@@ -124,7 +119,7 @@ spec:
         enabled: true
         type: nfs
         server: 
-          nfs: "${NAS_ADDR}"
+          nfs: "192.168.1.33"
           path: /volume2/Media/
         globalMounts:
           - path: /media
