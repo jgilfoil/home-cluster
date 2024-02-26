@@ -10,7 +10,7 @@ spec:
     schedule: "0 */4 * * *"
   restic:
     copyMethod: Snapshot
-    pruneIntervalDays: 10
+    pruneIntervalDays: 3
     repository: "${APP}-restic-secret"
     cacheCapacity: "${VOLSYNC_CACHE_CAPCITY}"
     volumeSnapshotClassName: csi-ceph-blockpool
