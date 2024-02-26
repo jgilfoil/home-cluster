@@ -91,7 +91,7 @@ spec:
     ingress:
       main:
         enabled: true
-        ClassName: internal
+        className: internal
         annotations:
           # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
@@ -116,11 +116,9 @@ spec:
       tmp:
         type: emptyDir
       media:
-        enabled: true
         type: nfs
-        server: 
-          nfs: "192.168.1.33"
-          path: /volume2/Media/
+        server: "192.168.1.33"
+        path: /volume2/Media/
         globalMounts:
           - path: /media
             readOnly: true
