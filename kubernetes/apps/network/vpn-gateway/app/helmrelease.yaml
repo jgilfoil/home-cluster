@@ -15,7 +15,7 @@ spec:
       interval: 15m
       sourceRef:
         kind: HelmRepository
-        name: angelnu-helm-charts
+        name: angelnu
         namespace: flux-system
   #See https://github.com/angelnu/helm-charts/blob/main/charts/apps/pod-gateway/values.yaml
   values:
