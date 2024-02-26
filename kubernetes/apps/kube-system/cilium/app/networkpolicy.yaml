@@ -5,12 +5,12 @@ metadata:
   name: vpn-pod-gateway
   namespace: vpn
   labels:
-    app.kubernetes.io/instance: pod-gateway
+    app.kubernetes.io/instance: vpn-gateway
     app.kubernetes.io/name: pod-gateway
 spec:
   endpointSelector:
     matchLabels:
-      app.kubernetes.io/instance: pod-gateway
+      app.kubernetes.io/instance: vpn-gateway
       app.kubernetes.io/name: pod-gateway
 
   egress:
