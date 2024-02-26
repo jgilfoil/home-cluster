@@ -110,7 +110,7 @@ spec:
         pullPolicy: Always
         tag: v3.9.0
       gatewayDefault: false
-      gatewayLabel: routeToVPN
-      gatewayAnnotation: routeToVPN
+      gatewayLabel: setGateway
+      gatewayAnnotation: setGateway
       namespaceSelector:
         label: "vpn-routed-gateway"
