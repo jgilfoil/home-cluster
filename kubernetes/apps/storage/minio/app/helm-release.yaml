@@ -108,7 +108,7 @@ spec:
               - *host
               - *s3Host
     persistence:
-      config:
+      data:
         type: nfs
         server: 192.168.1.33
         path: /volume10/Minio
