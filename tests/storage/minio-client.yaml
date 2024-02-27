@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: s3-client
+  labels:
+    app: s3-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: s3-client
+  template:
+    metadata:
+      labels:
+        app: s3-client
+    spec:
+      containers:
+      - name: s3-client
+        image: amazon/aws-cli
+        command: ["sleep"]
+        args: ["3600"]
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: "your-access-key"
+        - name: AWS_SECRET_ACCESS_KEY
+          value: "your-secret-key"
+        - name: AWS_DEFAULT_REGION
+          value: "us-east-1"
+        - name: BUCKET_NAME
+          value: "your-bucket-name"

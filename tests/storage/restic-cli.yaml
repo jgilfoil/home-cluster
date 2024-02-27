@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "restic-shell"
+  namespace: "media"
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: list
+    image: docker.io/restic/restic:0.16.4
+    command: ["/bin/sh", "-c", "while true; do sleep 99999; done"]
+    envFrom:
+    - secretRef:
+        name: "prowlarr-restic-secret"
