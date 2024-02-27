@@ -45,18 +45,9 @@ spec:
             env:
               TZ: America/Denver
             probes:
-            #   liveness: &probes
-            #     enabled: true
-            #     custom: true
-            #     spec:
-            #       httpGet:
-            #         path: /identity
-            #         port: 32400
-            #       initialDelaySeconds: 0
-            #       periodSeconds: 10
-            #       timeoutSeconds: 1
-            #       failureThreshold: 3
-            #   readiness: *probes
+              liveness: &probes
+                enabled: false
+              readiness: *probes
               startup:
                 enabled: false
             securityContext:
