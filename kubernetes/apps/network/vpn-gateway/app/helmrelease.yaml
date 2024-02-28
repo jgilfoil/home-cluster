@@ -23,7 +23,7 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
-    DNS: 172.16.1.1
+    # DNS: 172.16.1.1
 
     addons:
       vpn:
@@ -116,8 +116,8 @@ spec:
       # -- Traffic to these IPs will be sent through the K8S gateway
       VPN_LOCAL_CIDRS: "10.0.0.0/8 192.168.1.0/24"
       NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8 192.168.0.0/24"
-      VXLAN_ID: 43
-      VXLAN_IP_NETWORK: 172.16.1
+      # VXLAN_ID: 43
+      # VXLAN_IP_NETWORK: 172.16.1
     
     # -- settings to expose ports, usually through a VPN provider.
     # NOTE: if you change it you will need to manually restart the gateway POD
