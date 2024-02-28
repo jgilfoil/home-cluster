@@ -44,18 +44,32 @@ data:
     title: Dashboard
     theme: dark
     color: slate
-    headerStyle: clean
+    headerStyle: boxed
     layout:
-      Home:
-        style: column
-        icon: mdi-home-analytics
-      Network:
+      Calendar:
+        style: columns
+      Automation:
+        style: columns
+      Media:
+        style: columns
+        columns: 3
+      Selfhosted:
+        style: row
+        columns: 2
+      Security:
+        style: row
+        columns: 2
+      Downloads:
         style: row
         columns: 3
-        icon: mdi-server
+      Games:
+        style: row
+      Infrastructure:
+        style: row
+        columns: 2
       Observability:
-        style: column
-        icon: mdi-chart-line
+        style: row
+        columns: 3
   widgets.yaml: |
     - resources:
         backend: kubernetes
