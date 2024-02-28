@@ -83,5 +83,6 @@ spec:
             path: /app/config/settings.yaml
           - subPath: widgets.yaml
             path: /app/config/widgets.yaml
+    enableRbac: true
     serviceAccount:
       create: true
