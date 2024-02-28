@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: &name novpn
-  namespace: media
+  namespace: testing
 spec:
   replicas: 1
   selector:
