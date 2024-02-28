@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &name novpn
+  namespace: testing
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: *name
+  template:
+    metadata:
+      labels:
+        app: *name
+    spec:
+      containers:
+      - name: dnsutils
+        image: nicolaka/netshoot
+        command: ["/bin/bash", "-c", "--"]
+        args: ["while true; do sleep 30; done;"]
