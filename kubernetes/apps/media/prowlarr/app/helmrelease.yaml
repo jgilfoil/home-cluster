@@ -97,7 +97,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Media
           gethomepage.dev/name: Prowlarr
-          gethomepage.dev/icon: prolwarr.png
+          gethomepage.dev/icon: prowlarr.svg
           gethomepage.dev/description: Torrent Indexer Management
           # gethomepage.dev/widget.type: prowlarr
           # gethomepage.dev/widget.url: http://prowlarr.media
