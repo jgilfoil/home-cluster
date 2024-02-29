@@ -122,6 +122,6 @@ spec:
         enabled: true
         type: configMap
         name: health-check
-        defaultMode: 755
+        defaultMode: 0755
         globalMounts:
           - path: /opt/probe/health_check.sh
