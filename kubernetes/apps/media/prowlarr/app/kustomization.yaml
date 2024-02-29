@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - ../../../../templates/volsync
   - replicationsource.yaml
+  - configmap.yaml
