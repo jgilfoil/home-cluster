@@ -6,8 +6,7 @@ data:
   health-check.sh: |
     #!/bin/sh
     response=$(wget -q -O- http://localhost/ping | jq -r '.status')
-    if [ "$response" = "OK" ]; then
-      exit 0
-    else
+    if [ "$response" != "OK" ]; then
+      echo "$response"
       exit 1
     fi
