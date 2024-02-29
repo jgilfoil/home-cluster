@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: &name vpn-routed
+  name: vpn-routed
   namespace: testing
-  annotations:
-    setGateway: "true"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: *name
+      app: vpn-routed
   template:
     metadata:
       labels:
-        app: *name
+        app: vpn-routed
+      annotations:
+        setGateway: "true"
     spec:
       containers:
       - name: dnsutils
