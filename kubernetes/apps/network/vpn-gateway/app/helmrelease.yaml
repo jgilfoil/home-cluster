@@ -91,7 +91,7 @@ spec:
             memory: 10M
 
         networkPolicy:
-          enabled: true
+          enabled: false
           egress:
             - to:
               - ipBlock:
