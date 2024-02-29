@@ -91,19 +91,8 @@ spec:
             memory: 10M
 
         networkPolicy:
-          enabled: true
+          enabled: false
 
-          egress:
-            - to:
-              - ipBlock:
-                  cidr: 0.0.0.0/0
-              ports:
-              # VPN traffic
-              - port: ${SECRET_VPN_GATEWAY_PORT}
-                protocol: UDP
-            - to:
-              - ipBlock:
-                  cidr: 10.0.0.0/8
     settings:
       # -- If using a VPN, interface name created by it
       VPN_INTERFACE: wg0
@@ -114,19 +103,17 @@ spec:
       # -- Traffic to these IPs will be sent through the K8S gateway
       VPN_LOCAL_CIDRS: "10.0.0.0/8 192.168.1.0/24"
       NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8 192.168.0.0/24"
-      # VXLAN_ID: 43
-      # VXLAN_IP_NETWORK: 172.16.1
     
     # -- settings to expose ports, usually through a VPN provider.
     # NOTE: if you change it you will need to manually restart the gateway POD
-    # publicPorts:
-    # - hostname: transmission
-    #   IP: 10 # must be an integer between 2 and VXLAN_GATEWAY_FIRST_DYNAMIC_IP (20 by default)
-    #   ports:
-    #   - type: udp
-    #     port: 27071
-    #   - type: tcp
-    #     port: 27071
+    publicPorts:
+    - hostname: transmission
+      IP: 10 # must be an integer between 2 and VXLAN_GATEWAY_FIRST_DYNAMIC_IP (20 by default)
+      ports:
+      - type: udp
+        port: 27071
+      - type: tcp
+        port: 27071
 
     routed_namespaces:
     - testing
