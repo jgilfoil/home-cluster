@@ -52,12 +52,13 @@ spec:
               TZ: "America/Denver"
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
-                spec:
-                  httpGet:
-                    path: /ping
-                    port: *port
+                exec:
+                  command:
+                    - sh
+                    - -c
+                    - "if [ \"$(wget -q -O- http://localhost/ping | jq -r '.status')\" = 'OK' ]; then exit 0; else exit 1; fi"
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
