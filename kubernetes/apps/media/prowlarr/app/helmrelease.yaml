@@ -31,11 +31,13 @@ spec:
     - name: minio
       namespace: storage
   values:
+    defaultPodOptions:
+      annotations:
+        setGateway: "true"
     controllers:
       main:
         annotations:
           reloader.stakater.com/auto: "true"
-          setGateway: "true"
         containers:
           main:
             image:
