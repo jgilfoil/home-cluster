@@ -52,7 +52,7 @@ spec:
               TZ: "America/Denver"
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   exec:
