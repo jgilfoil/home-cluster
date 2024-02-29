@@ -59,13 +59,7 @@ spec:
                     command:
                       - sh
                       - -c
-                      - |
-                        response=$(wget -q -O- http://localhost/ping | jq -r '.status')
-                        if [ "$response" = "OK" ]; then
-                          exit 0
-                        else
-                          exit 1
-                        fi
+                      - /opt/probe/health_check.sh
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -124,3 +118,10 @@ spec:
         existingClaim: prowlarr
       tmp:
         type: emptyDir
+      healthcheck:
+        enabled: true
+        type: configMap
+        name: health-check
+        defaultMode: 0755
+        globalMounts:
+          - path: /opt/probe/health_check.sh
