@@ -109,7 +109,7 @@ spec:
       VPN_TRAFFIC_PORT: ${SECRET_VPN_GATEWAY_PORT}
       # -- Traffic to these IPs will be sent through the K8S gateway
       VPN_LOCAL_CIDRS: "10.69.0.0/16 10.96.0.0/16 192.168.1.0/24"
-      NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8 10.96.0.0/16 192.168.0.0/24"
+      NOT_ROUTED_TO_GATEWAY_CIDRS: "10.69.0.0/16 10.96.0.0/16 192.168.0.0/24"
     
     # -- settings to expose ports, usually through a VPN provider.
     # NOTE: if you change it you will need to manually restart the gateway POD
