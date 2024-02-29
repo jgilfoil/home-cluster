@@ -54,12 +54,17 @@ spec:
               liveness: &probes
                 enabled: true
                 custom: true
-                spec:
-                  exec:
-                    command:
-                      - sh
-                      - -c
-                      - "if [ \"$(wget -q -O- http://localhost/ping | jq -r '.status')\" = 'OK' ]; then exit 0; else exit 1; fi"
+                exec:
+                  command:
+                    - sh
+                    - -c
+                    - |
+                      response=$(wget -q -O- http://localhost/ping | jq -r '.status')
+                      if [ "$response" = "OK" ]; then
+                        exit 0
+                      else
+                        exit 1
+                      fi
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
