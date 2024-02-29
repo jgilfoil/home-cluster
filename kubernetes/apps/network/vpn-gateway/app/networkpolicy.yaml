@@ -18,7 +18,7 @@ spec:
         - 0.0.0.0/0
       toPorts:
         - ports:
-            - port: ${SECRET_VPN_GATEWAY_PORT}
+            - port: "1637"
               protocol: UDP
     - toEntities:
         - cluster
