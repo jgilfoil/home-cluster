@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: overseerr-health-check
+  name: ${APP}-health-check
 data:
   health_check.sh: |
     #!/bin/sh

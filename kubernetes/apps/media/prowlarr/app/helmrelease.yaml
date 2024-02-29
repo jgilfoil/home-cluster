@@ -121,7 +121,7 @@ spec:
       healthcheck:
         enabled: true
         type: configMap
-        name: health-check
+        name: ${APP}-health-check
         defaultMode: 0755
         globalMounts:
           - path: /opt/probe
