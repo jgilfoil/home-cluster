@@ -28,8 +28,8 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: storage
-    - name: minio
-      namespace: storage
+    - name: vpn-gateway
+      namespace: network
   values:
     defaultPodOptions:
       annotations:
