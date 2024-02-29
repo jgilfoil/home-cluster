@@ -116,7 +116,7 @@ spec:
         port: 27071
 
     routed_namespaces:
-    - testing
+    - media
     webhook:
       image:
         repository: ghcr.io/angelnu/gateway-admision-controller
