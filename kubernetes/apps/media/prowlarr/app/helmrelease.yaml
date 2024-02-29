@@ -92,6 +92,15 @@ spec:
       main:
         enabled: true
         className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: Prowlarr
+          gethomepage.dev/icon: prolwarr.png
+          gethomepage.dev/description: Torrent Indexer Management
+          gethomepage.dev/widget.type: prowlarr
+          gethomepage.dev/widget.url: http://prowlarr.media
+          gethomepage.dev/widget.key: "{{`{{HOMEPAGE_VAR_PROWLARR_TOKEN}}`}}"
         hosts:
           - host: &host "prowlarr.${SECRET_DOMAIN}"
             paths:
