@@ -1,0 +1,26 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: "${APP}"
+  namespace: media
+spec:
+  sourcePVC: "${APP}"
+  trigger:
+    schedule: "0 */4 * * *"
+  restic:
+    copyMethod: Snapshot
+    pruneIntervalDays: 3
+    repository: "${APP}-restic-secret"
+    cacheCapacity: "${VOLSYNC_CACHE_CAPCITY}"
+    volumeSnapshotClassName: csi-ceph-blockpool
+    storageClassName: ceph-block
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+    retain:
+      hourly: 9
+      daily: 15
+      weekly: 3
+      monthly: 3
