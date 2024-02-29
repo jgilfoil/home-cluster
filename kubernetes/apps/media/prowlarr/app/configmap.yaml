@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: health-check
 data:
-  health-check.sh: |
+  health_check.sh: |
     #!/bin/sh
     response=$(wget -q -O- http://localhost/ping | jq -r '.status')
     if [ "$response" != "OK" ]; then
