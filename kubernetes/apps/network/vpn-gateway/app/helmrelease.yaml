@@ -23,8 +23,6 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
-    # DNS: 172.16.1.1
-
     addons:
       vpn:
         enabled: true
@@ -92,20 +90,20 @@ spec:
           limits:
             memory: 10M
 
-        # networkPolicy:
-        #   enabled: true
+        networkPolicy:
+          enabled: true
 
-          # egress:
-          #   - to:
-          #     - ipBlock:
-          #         cidr: 0.0.0.0/0
-          #     ports:
-          #     # VPN traffic
-          #     - port: ${SECRET_VPN_GATEWAY_PORT}
-          #       protocol: UDP
-          #   - to:
-          #     - ipBlock:
-          #         cidr: 10.0.0.0/8
+          egress:
+            - to:
+              - ipBlock:
+                  cidr: 0.0.0.0/0
+              ports:
+              # VPN traffic
+              - port: ${SECRET_VPN_GATEWAY_PORT}
+                protocol: UDP
+            - to:
+              - ipBlock:
+                  cidr: 10.0.0.0/8
     settings:
       # -- If using a VPN, interface name created by it
       VPN_INTERFACE: wg0
