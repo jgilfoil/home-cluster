@@ -49,13 +49,14 @@ spec:
               PORT: &port 80
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
-                exec:
-                  command:
-                    - sh
-                    - -c
-                    - "if [ \"$(wget -q -O- http://localhost/api/v1/status | jq -r '.status')\" = 'OK' ]; then exit 0; else exit 1; fi"
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - /opt/probe/health_check.sh
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -89,6 +90,15 @@ spec:
       main:
         enabled: true
         className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: Overseer
+          gethomepage.dev/icon: overseerr.png
+          gethomepage.dev/description: Request Management
+          # gethomepage.dev/widget.type: overseerr
+          # gethomepage.dev/widget.url: http://overseerr.media
+          # gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_OVERSEERR_TOKEN}}"
         hosts:
           - host: &host overseerr.${SECRET_DOMAIN}
             paths:
@@ -107,3 +117,10 @@ spec:
           - path: /app/config
       tmp:
         type: emptyDir
+      healthcheck:
+        enabled: true
+        type: configMap
+        name: health-check
+        defaultMode: 0755
+        globalMounts:
+          - path: /opt/probe
