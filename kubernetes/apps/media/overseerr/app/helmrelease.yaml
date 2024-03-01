@@ -57,7 +57,7 @@ spec:
                       - sh
                       - -c
                       - /opt/probe/health_check.sh
-                  initialDelaySeconds: 5
+                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
