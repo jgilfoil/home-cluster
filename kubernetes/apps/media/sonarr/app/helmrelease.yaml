@@ -1,0 +1,140 @@
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2beta2.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: sonarr
+  namespace: ${NAMESPACE}
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 2.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: storage
+    - name: vpn-gateway
+      namespace: network
+  values:
+    defaultPodOptions:
+      annotations:
+        setGateway: "true"
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          routeToVPN: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.0.733@sha256:7f1496845bc0bf1d46b37b1013bb2a4b7af79e13b2a12dbc882d456bc869ca39
+            env:
+              TZ: "America/Denver"
+              SONARR__THEME: dark
+              SONARR__PORT: &port 80
+              SONARR__INSTANCE_NAME: Sonarr
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - sh
+                      - -c
+                      - /opt/probe/health_check.sh
+              readiness: *probes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                memory: 250Mi
+                cpu: 10m
+              limits:
+                memory: 1Gi
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            runAsNonRoot: true
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups: [100]
+    service:
+      main:
+        ports:
+          http:
+            port: *port
+    ingress:
+      main:
+        enabled: true
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: Sonarr
+          gethomepage.dev/icon: sonarr.svg
+          gethomepage.dev/description: TV Download Manager
+          # gethomepage.dev/widget.type: sonarr
+          # gethomepage.dev/widget.url: http://sonarr.media.svc
+          # gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_TOKEN}}"
+        hosts:
+          - host: &host sonarr.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        existingClaim: sonarr
+      tmp:
+        type: emptyDir
+      media:
+        type: nfs
+        server: &NAS_ADDR ${NAS_ADDR}
+        path: /volume2/Media
+        globalMounts:
+          - path: /media
+      downloads:
+        type: nfs
+        server: *NAS_ADDR
+        path: /volume9/downloads
+        globalMounts:
+          - path: /downloads
+      scripts:
+        enabled: true
+        type: configMap
+        name: reverse-symlink
+        defaultMode: 0777
+      healthcheck:
+        enabled: true
+        type: configMap
+        name: ${APP}-health-check
+        defaultMode: 0755
+        globalMounts:
+          - path: /opt/probe

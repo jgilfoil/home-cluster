@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: health-check
+data:
+  health_check.sh: |
+    #!/bin/sh
+    response=$(wget -q -O- http://localhost/ping | jq -r '.status')
+    if [ "$response" != "OK" ]; then
+      echo "$response"
+      exit 1
+    fi
