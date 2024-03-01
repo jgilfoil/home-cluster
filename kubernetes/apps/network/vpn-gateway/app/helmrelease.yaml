@@ -19,7 +19,7 @@ spec:
     image:
       # repository: ghcr.io/angelnu/pod-gateway
       repository: jgilfoil/pod-gateway
-      tag: v1.8.2
+      tag: v1.8.2@sha256:77e0810c4f609b3462ca208f3e7ce26f7259aefdadbbf3ca85ed07884a99fafa
 
     podAnnotations:
       reloader.stakater.com/auto: "true"
