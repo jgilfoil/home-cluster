@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/sonarr/plex/app
+  path: ./kubernetes/apps/media/sonarr/app
   prune: true
   sourceRef:
     kind: GitRepository
