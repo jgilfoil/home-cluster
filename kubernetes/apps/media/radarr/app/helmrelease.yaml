@@ -31,7 +31,8 @@ spec:
     - name: vpn-gateway
       namespace: network
   values:
-    annotations:
+    defaultPodOptions:
+      annotations:
         setGateway: "true"
     controllers:
       main:
