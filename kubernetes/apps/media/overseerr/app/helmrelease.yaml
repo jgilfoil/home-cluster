@@ -57,7 +57,7 @@ spec:
                       - sh
                       - -c
                       - /opt/probe/health_check.sh
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 5
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
@@ -96,9 +96,9 @@ spec:
           gethomepage.dev/name: Overseer
           gethomepage.dev/icon: overseerr.png
           gethomepage.dev/description: Request Management
-          # gethomepage.dev/widget.type: overseerr
-          # gethomepage.dev/widget.url: http://overseerr.media
-          # gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_OVERSEERR_TOKEN}}"
+          gethomepage.dev/widget.type: overseerr
+          gethomepage.dev/widget.url: http://overseerr.media
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_OVERSEERR_TOKEN}}"
         hosts:
           - host: &host overseerr.${SECRET_DOMAIN}
             paths:
