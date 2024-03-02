@@ -3,7 +3,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: prowlarr
-  namespace: ${NAMESPACE}
 spec:
   interval: 30m
   chart:
@@ -41,8 +40,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/prowlarr-nightly
-              tag: 1.14.1.4315@sha256:6a148787fc395d5908e19c9e8a8b8dc96247d776e806b329a987cf746e92cbe8
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.14.0.4286@sha256:c77d84ebf7a64844c858f249cb3fbb59b0d2d2de21709126c339be14386a804f
             env:
               COMPlus_EnableDiagnostics: "0"
               PROWLARR__INSTANCE_NAME: Prowlarr
