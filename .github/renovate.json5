@@ -12,6 +12,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard 🤖",
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "rebaseWhen": "conflicted",
+  "timezone": "America/Denver",
   // "schedule": ["on saturday"],
   "flux": {
     "fileMatch": [
@@ -62,18 +63,19 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": "Auto-merge Prowlarr image updates",
+      "description": "Auto-merge apps",
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["prowlarr-develop"]
-    },
-    {
-      "description": "Auto-merge Sonarr image updates",
-      "matchDatasources": ["docker"],
-      "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["sonarr-develop"]
+      "matchPackagePatterns": [
+        "prowlarr-develop",
+        "sonarr-develop",
+        "overseerr",
+        "radarr",
+        "transmission",
+        "plex"
+      ],
+      "schedule": ["after 9am every weekday, before 1pm every weekday"]
     },
     // groups
     {
