@@ -106,7 +106,7 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
-    }
+    },
     // custom versioning
     {
       "description": ["Use custom versioning for k3s"],
