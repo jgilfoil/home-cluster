@@ -66,14 +66,14 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/prowlarr-develop$"]
+      "matchPackagePatterns": ["prowlarr-develop"]
     },
     {
       "description": "Auto-merge Sonarr image updates",
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/sonarr-develop$"]
+      "matchPackagePatterns": ["sonarr-develop"]
     },
     // groups
     {
