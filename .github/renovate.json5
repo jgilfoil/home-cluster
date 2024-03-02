@@ -62,15 +62,12 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": ["Rook-Ceph Group"],
-      "groupName": "Rook-Ceph",
-      "matchPackagePatterns": ["rook.ceph"],
-      "matchDatasources": ["helm"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
-    },
+      "description": "Auto-merge Prowlarr image updates",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/prowlarr-nightly$"]
+    }    
     // groups
     {
       "description": ["Flux Group"],
@@ -83,6 +80,26 @@
       },
       "separateMinorPatch": true
     },
+    {
+      "description": ["Rook-Ceph Group"],
+      "groupName": "Rook-Ceph",
+      "matchPackagePatterns": ["rook.ceph"],
+      "matchDatasources": ["helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
+      "description": ["System Upgrade Controller Group"],
+      "groupName": "System Upgrade Controller",
+      "matchPackagePatterns": ["system-upgrade-controller"],
+      "matchDatasources": ["docker", "github-releases"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    }
     // custom versioning
     {
       "description": ["Use custom versioning for k3s"],
