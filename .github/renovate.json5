@@ -66,8 +66,15 @@
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
-      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/prowlarr-nightly$"]
-    }    
+      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/prowlarr-develop$"]
+    },
+    {
+      "description": "Auto-merge Sonarr image updates",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": ["^ghcr\\.io/onedr0p/sonarr-develop$"]
+    },
     // groups
     {
       "description": ["Flux Group"],
