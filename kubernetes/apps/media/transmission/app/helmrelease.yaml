@@ -122,8 +122,9 @@ spec:
           gethomepage.dev/name: Transmission
           gethomepage.dev/icon: transmission.svg
           gethomepage.dev/description: Torrent Download
-          # gethomepage.dev/widget.type: transmission
-          # gethomepage.dev/widget.url: http://transmission.media.svc
+          gethomepage.dev/widget.type: transmission
+          gethomepage.dev/widget.url: http://transmission.media.svc
+          gethomepage.dev/widget.rpcUrl: /transmission/
           # gethomepage.dev/widget.username: "{{HOMEPAGE_VAR_TRANSMISSION_USERNAME}}"
           # gethomepage.dev/widget.password: "{{HOMEPAGE_VAR_TRANSMISSION_PASSWORD}}"
         hosts:

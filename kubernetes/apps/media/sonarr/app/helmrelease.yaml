@@ -97,9 +97,9 @@ spec:
           gethomepage.dev/name: Sonarr
           gethomepage.dev/icon: sonarr.svg
           gethomepage.dev/description: TV Download Manager
-          # gethomepage.dev/widget.type: sonarr
-          # gethomepage.dev/widget.url: http://sonarr.media.svc
-          # gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_TOKEN}}"
+          gethomepage.dev/widget.type: sonarr
+          gethomepage.dev/widget.url: http://sonarr.media.svc
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_SONARR_TOKEN}}"
         hosts:
           - host: &host "sonarr.${SECRET_DOMAIN}"
             paths:
