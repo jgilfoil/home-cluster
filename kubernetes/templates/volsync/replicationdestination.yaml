@@ -10,6 +10,7 @@ spec:
     repository: "${APP}-restic-secret"
     copyMethod: Snapshot
     volumeSnapshotClassName: "csi-ceph-blockpool"
+    cacheStorageClassName: "openebs-hostpath"
     cacheCapacity: "${VOLSYNC_CACHE_CAPCITY}"
     storageClassName: "ceph-block"
     accessModes: 
