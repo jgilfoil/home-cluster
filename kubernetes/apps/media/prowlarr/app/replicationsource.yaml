@@ -14,6 +14,7 @@ spec:
     repository: "${APP}-restic-secret"
     cacheCapacity: "${VOLSYNC_CACHE_CAPCITY}"
     volumeSnapshotClassName: csi-ceph-blockpool
+    cacheStorageClassName: openebs-hostpath
     storageClassName: ceph-block
     moverSecurityContext:
       runAsUser: 568
