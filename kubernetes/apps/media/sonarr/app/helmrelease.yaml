@@ -118,13 +118,13 @@ spec:
         type: emptyDir
       media:
         type: nfs
-        server: "${NAS_ADDR}"
+        server: "${NAS_ADDR1}"
         path: /volume2/Media
         globalMounts:
           - path: /media
       downloads:
         type: nfs
-        server: "${NAS_ADDR}"
+        server: "${NAS_ADDR1}"
         path: /volume9/downloads
         globalMounts:
           - path: /downloads
