@@ -8,4 +8,4 @@ data:
   TIMEZONE: "America/Denver"
   CLUSTER_CIDR: "10.69.0.0/16"
   NODE_CIDR: "192.168.1.0/24"
-  NAS_ADDR1: "192.1681.133"
+  NAS_ADDR1: "1.33"
