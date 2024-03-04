@@ -7,13 +7,14 @@ metadata:
     app.kubernetes.io/name: homepage
 data:
   bookmarks.yaml: |
-    - ChatBots:
+    - Chatbots:
         - Perplexity:
             - icon: https://twitter.com/perplexity_ai/photo
               href: https://www.perplexity.ai/
         - ChatGPT:
             - icon: chatgpt.png
               href: https://chat.openai.com/
+    - Repositories:
         - home-cluster:
             - icon: github-light.png
               href: https://github.com/jgilfoil/home-cluster
@@ -47,14 +48,12 @@ data:
         style: row
         columns: 3
       Observability:
-        style: columns
-        columns: 3
+        style: Columns
       Network:
-        style: row
-        columns: 2
+        style: Columns
       Storage:
         style: row
-        columns: 2
+        columns: 3
   widgets.yaml: |
     - resources:
         backend: kubernetes
