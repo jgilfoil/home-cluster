@@ -7,19 +7,10 @@ metadata:
     app.kubernetes.io/name: homepage
 data:
   bookmarks.yaml: |
-    - Communitcate:
-        - Discord:
-            - icon: discord.png
-              href: https://discord.com/app
-    - Media:
-        - YouTube:
-            - icon: youtube.png
-              href: https://youtube.com/feed/subscriptions
-    - Reading:
-        - Reddit:
-            - icon: reddit.png
-              href: https://reddit.com
     - Git:
+        - home-cluster:
+            - icon: kubernetes.png
+              href: https://github.com/jgilfoil/home-cluster
         - kubesearch:
             - icon: kubernetes-dashboard.png
               href: https://kubesearch.dev
@@ -77,12 +68,12 @@ data:
         expanded: true
         memory: true
     - search:
-        provider: ["duckduckgo"]
+        provider: ["duckduckgo", "google"]
         focus: false
         target: _blank
     - greeting:
         text_size: xl
-        text: "Welcome!"
+        text: "I aim to misbehave."
     - datetime:
         text_size: l
         format:
