@@ -47,13 +47,14 @@ data:
       Media:
         style: row
         columns: 3
-      Observability:
-        style: Columns
       Network:
         style: Columns
+      Observability:
+        style: rows
+        columns: 2
       Storage:
         style: row
-        columns: 3
+        columns: 2
   widgets.yaml: |
     - resources:
         backend: kubernetes
