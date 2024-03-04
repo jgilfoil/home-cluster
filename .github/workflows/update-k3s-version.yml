@@ -1,0 +1,32 @@
+name: Update k3s Version in README
+
+on:
+  push:
+    paths:
+      - 'kubernetes/apps/kube-system/system-upgrade-controller/ks.yaml'
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Extract KUBE_VERSION
+        id: extract-version
+        run: |
+          KUBE_VERSION=$(cat kubernetes/apps/kube-system/system-upgrade-controller/ks.yaml | grep 'KUBE_VERSION:' | cut -d ':' -f2 | xargs)
+          echo "KUBE_VERSION=$KUBE_VERSION" >> $GITHUB_ENV
+
+      - name: Update README.md
+        run: |
+          K3S_VERSION_BADGE="[![k3s version](https://img.shields.io/badge/dynamic/yaml?url=https://raw.githubusercontent.com/jgilfoil/home-cluster/main/kubernetes/apps/kube-system/system-upgrade-controller/ks.yaml&query=$.KUBE_VERSION&style=for-the-badge&logo=kubernetes&logoColor=white&label=k3s)](https://k3s.io/)"
+          sed -i "/<!-- k3s_version_badge_start -->/,/<!-- k3s_version_badge_end -->/c\<!-- k3s_version_badge_start -->\n$K3S_VERSION_BADGE\n<!-- k3s_version_badge_end -->" README.md
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "Update k3s version badge to $KUBE_VERSION"
+          git push
