@@ -110,7 +110,7 @@ spec:
     persistence:
       data:
         type: nfs
-        server: 192.168.1.33
+        server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume10/Minio
         globalMounts:
           - path: /data

@@ -147,7 +147,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: "${NAS_ADDR}"
+            server: "${NAS_ADDR:-0.0.0.0}"
             path: /volume2/Media/
         mountPath: /media
         readOnly: false
@@ -156,7 +156,7 @@ spec:
         type: custom
         volumeSpec:
           nfs:
-            server: "${NAS_ADDR}"
+            server: "${NAS_ADDR:-0.0.0.0}"
             path: /volume9/downloads
         mountPath: /downloads
       watch:
