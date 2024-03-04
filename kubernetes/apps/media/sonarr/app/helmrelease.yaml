@@ -124,7 +124,7 @@ spec:
           - path: /media
       downloads:
         type: nfs
-        server: "${NAS_ADDR:-10.255.255.253}"
+        server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume9/downloads
         globalMounts:
           - path: /downloads
