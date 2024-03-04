@@ -49,10 +49,10 @@ data:
         columns: 3
       Network:
         style: Columns
-      Observability:
-        style: rows
-        columns: 2
       Storage:
+        style: row
+        columns: 2
+      Observability:
         style: row
         columns: 2
   widgets.yaml: |
