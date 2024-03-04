@@ -63,7 +63,7 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": "Auto-merge apps",
+      "description": "Auto-merge Media Apps",
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
@@ -76,6 +76,17 @@
         "plex"
       ],
       "schedule": ["after 9am every weekday, before 1pm every weekday"]
+    },
+    {
+      "description": "Auto-merge Observability Apps",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": [
+        "kube-prometheus-stack",
+        "grafana",
+        "kubernetes-dashboard"
+      ]
     },
     // groups
     {
