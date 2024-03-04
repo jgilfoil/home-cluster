@@ -10,9 +10,9 @@
 
 ##
 
-This repository manages my Home Kubernetes Cluster. I leverage GitOps principles and orchestrate via Flux for continuous deployment and kustomize for as much templating and variable substition as is reasonable, for services and applications in an advanced home network environment. 
+This repository manages my Home Kubernetes Cluster. 
 
-This is iteration ~2.0 of my home cluster. You can see my previous iteration, archived [here](https://github.com/jgilfoil/k8s-gitops). One of my main goals for this environment is to leverage as much automation as possible to remove overhead and maintenance tasks required to maintain this, even as I add more applications.
+This is iteration ~2.0 of my home cluster. You can see my previous iteration, archived [here](https://github.com/jgilfoil/k8s-gitops). One of my main goals for this evolution is to leverage as much automation as possible to remove overhead and maintenance tasks required to maintain this, even as I add more applications.
 
 Inspired and based on [onedr0p's cluster template](https://github.com/onedr0p/cluster-template).
 
@@ -31,8 +31,8 @@ All of the below infrastructure and suporting services combine to provide a plat
 | Device Purpose    | Quantity | Model            | Processor           | Memory | Storage             |
 |-------------------|----------|------------------|---------------------|--------|---------------------|
 | K3s Nodes         | 3        | Odroid-H2        | Intel J4105, 2.5GHz | 32GB   | 256GB NVMe, 1TB SSD |
-| DNS Servers       | 2        | Odroid-C4        | ARM Amlogic S905X3  | -      | 16GB                |
-| Network Switch    | 1        | Unifi USW-16-POE | -                   | -      | 4GB                 |
+| DNS Servers       | 2        | Odroid-C4        | ARM Amlogic S905X3  | 4GB    | 16GB                |
+| Network Switch    | 1        | Unifi USW-16-POE | -                   | -      | -                   |
 | NAS Backups/Media | 1        | Synology DS1520+ | Intel Celeron J4125 | 8GB    | 25TB                |
 
 ## Cluster Support Services Overview
