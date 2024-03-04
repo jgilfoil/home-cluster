@@ -20,8 +20,11 @@ jobs:
 
       - name: Update README.md
         run: |
-          K3S_VERSION="k3s-$KUBE_VERSION"
-          sed -i "s|k3s-v[0-9.]*+k3s[0-9]*|$K3S_VERSION|g" README.md
+          # Encode '+' as '%2B' for URL compatibility in the badge link
+          K3S_VERSION_ENCODED=$(echo "$KUBE_VERSION" | sed 's/\+/%2B/g')
+          K3S_VERSION="k3s-${K3S_VERSION_ENCODED}"
+          # Use the encoded version in the sed command to ensure proper matching and replacement
+          sed -i "s|k3s-v[0-9.]*%2Bk3s[0-9]*|$K3S_VERSION|g" README.md
 
       - name: Commit and Push
         run: |
