@@ -1,14 +1,14 @@
 <div align="center">
   <img src="images/banner.png" alt="Home Kubernetes Cluster Banner">
   
-  # Home Kubernetes Cluster
+  # My Home Kubernetes
   
   <!-- k3s_version_badge_start -->
   [![k3s version](https://img.shields.io/badge/k3s-v1.29.1%2Bk3s2-blue?style=for-the-badge&logo=kubernetes&logoColor=white)](https://k3s.io/)
   <!-- k3s_version_badge_end -->
 </div>
 
-
+##
 
 This repository manages my Home Kubernetes Cluster. I leverage GitOps principles and orchestrate via Flux for continuous deployment and kustomize for as much templating and variable substition as is reasonable, for services and applications in an advanced home network environment. 
 
