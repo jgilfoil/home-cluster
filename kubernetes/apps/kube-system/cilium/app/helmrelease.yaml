@@ -72,7 +72,12 @@ spec:
         ingress:
           enabled: true
           className: internal
-          annotations: {}
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/group: Observability
+            gethomepage.dev/name: Hubble
+            gethomepage.dev/icon: cilium.svg
+            gethomepage.dev/description: Cilium Observability Tool
           hosts:
             - "hubble.${SECRET_DOMAIN}"
           tls:

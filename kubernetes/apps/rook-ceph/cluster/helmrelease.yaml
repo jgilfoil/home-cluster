@@ -36,6 +36,12 @@ spec:
     ingress:
       dashboard:
         ingressClassName: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Infrastructure
+          gethomepage.dev/name: Rook-Ceph
+          gethomepage.dev/icon: rook.svg
+          gethomepage.dev/description: Cluster Storage Orchestrator
         host:
           name: &host rook.${SECRET_DOMAIN}
           path: /
