@@ -9,7 +9,7 @@ data:
   bookmarks.yaml: |
     - Chatbots:
         - Perplexity:
-            - icon: https://twitter.com/perplexity_ai/photo
+            - icon: https://seeklogo.com/images/P/perplexity-ai-logo-13120A0AAE-seeklogo.com.png
               href: https://www.perplexity.ai/
         - ChatGPT:
             - icon: chatgpt.png
