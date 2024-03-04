@@ -92,7 +92,7 @@ spec:
         className: internal
         annotations:
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Infrastcuture
+          gethomepage.dev/group: Storage
           gethomepage.dev/name: Minio
           gethomepage.dev/icon: minio.svg
           gethomepage.dev/description: S3 Object Storage

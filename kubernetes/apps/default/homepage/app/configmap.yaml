@@ -7,15 +7,21 @@ metadata:
     app.kubernetes.io/name: homepage
 data:
   bookmarks.yaml: |
-    - Git:
+    - ChatBots:
+        - Perplexity:
+            - icon: https://twitter.com/perplexity_ai/photo
+              href: https://www.perplexity.ai/
+        - ChatGPT:
+            - icon: chatgpt.png
+              href: https://chat.openai.com/
         - home-cluster:
-            - icon: kubernetes.png
+            - icon: github-light.png
               href: https://github.com/jgilfoil/home-cluster
         - kubesearch:
             - icon: kubernetes-dashboard.png
               href: https://kubesearch.dev
         - flux-cluster-template:
-            - icon: github.png
+            - icon: github-light.png
               href: https://github.com/onedr0p/flux-cluster-template
   docker.yaml: ""
   kubernetes.yaml: |
@@ -37,30 +43,18 @@ data:
     color: slate
     headerStyle: boxed
     layout:
-      Calendar:
-        style: columns
-      Automation:
-        style: columns
       Media:
+        style: row
+        columns: 3
+      Observability:
         style: columns
         columns: 3
-      Selfhosted:
+      Network:
         style: row
         columns: 2
-      Security:
+      Storage:
         style: row
         columns: 2
-      Downloads:
-        style: row
-        columns: 3
-      Games:
-        style: row
-      Infrastructure:
-        style: row
-        columns: 2
-      Observability:
-        style: row
-        columns: 3
   widgets.yaml: |
     - resources:
         backend: kubernetes
