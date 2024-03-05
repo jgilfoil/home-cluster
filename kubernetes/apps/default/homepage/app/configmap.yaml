@@ -43,8 +43,7 @@ data:
     theme: dark
     color: slate
     headerStyle: boxed
-    background: https://cdn.discordapp.com/attachments/1104297197140451338/1214701675462533220/24915.jpg?ex=65fa1217&is=65e79d17&hm=adebfac86eca8a7af2778e3c8c0dad4e072d3e398dd2c3039404301fc69ca38f&
-    layout:
+    background: https://i.ibb.co/5YxbFYS/24915.jpg
       Media:
         style: row
         columns: 3
