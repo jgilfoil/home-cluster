@@ -40,10 +40,12 @@ data:
               key: "{{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}"
   settings.yaml: |
     title: Dashboard
+    background: https://raw.githubusercontent.com/jgilfoil/home-cluster/main/images/homepage-background.jpg
+    cardBlur: md
     theme: dark
     color: slate
     headerStyle: boxed
-    background: https://i.ibb.co/5YxbFYS/24915.jpg
+    layout:
       Media:
         style: row
         columns: 3
