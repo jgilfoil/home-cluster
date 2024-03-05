@@ -43,11 +43,13 @@ spec:
       create: true
     metrics:
       create: true
-    timeZone: "America/Denver"
-    startTime: "4:00"
-    endTime: "10:00"
-    messageTemplateDrain: "⏳ Draining node %s"
-    messageTemplateReboot: "♻️ Rebooted node %s"
+    configuration:
+      timeZone: "America/Denver"
+      startTime: "4:00"
+      endTime: "10:00"
+      messageTemplateDrain: "⏳ Draining node %s"
+      messageTemplateReboot: "♻️ Rebooted node %s"
+      messageTemplateUncordon: "✅ Uncordoned node %s"
     extraEnvVars:
       - name: notifyUrl
         valueFrom:
