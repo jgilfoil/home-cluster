@@ -129,6 +129,6 @@ spec:
         path: /volume2/Media/
         globalMounts:
           - path: /media
-            readOnly: true
+            readOnly: false
       transcode:
         type: emptyDir
