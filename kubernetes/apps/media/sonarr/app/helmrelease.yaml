@@ -120,14 +120,14 @@ spec:
         type: nfs
         server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume2/Media
-        globalMounts:
-          - path: /media
-      downloads:
-        type: nfs
-        server: "${NAS_ADDR:-0.0.0.0}"
-        path: /volume9/downloads
-        globalMounts:
-          - path: /downloads
+        advancedMounts:
+          main:
+            main:
+              - path: /media
+                readOnly: false
+              - path: /downloads
+                readOnly: false
+                subPath: Downloads
       scripts:
         enabled: true
         type: configMap
