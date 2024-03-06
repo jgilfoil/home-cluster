@@ -118,16 +118,16 @@ spec:
         type: nfs
         server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume2/Media
-        globalMounts:
-          - path: /media
+        advancedMounts:
+          main:
+            main:
+              - path: /media
+                readOnly: false
+              - path: /downloads
+                readOnly: false
+                subPath: Downloads
       tmp:
         type: emptyDir
-      downloads:
-        type: nfs
-        server: "${NAS_ADDR:-0.0.0.0}"
-        path: /volume9/downloads
-        globalMounts:
-          - path: /downloads
       scripts:
         type: configMap
         name: reverse-symlink-radarr
