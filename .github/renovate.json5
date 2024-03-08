@@ -92,7 +92,7 @@
       "description": "Auto-merge System Apps",
       "matchDatasources": ["helm"],
       "automerge": true,
-      "matchUpdateTypes": ["minor"],
+      "matchUpdateTypes": ["patch"],
       "matchPackagePatterns": [
         "kured",
         "cert-manager"
@@ -102,7 +102,7 @@
       "description": "Auto-merge TaskFile stuff",
       "matchDatasources": ["github-releases", "docker"],
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch", "major"],
+      "matchUpdateTypes": ["patch", "minor", "major"],
       "matchPackagePatterns": [
         "prometheus-operator/prometheus-operator",
         "ghcr.io/siderolabs/installer"
