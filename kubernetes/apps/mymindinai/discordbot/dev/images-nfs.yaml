@@ -11,7 +11,7 @@ spec:
   storageClassName: mymindinai-nfs-dev
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: "wanshitong.${SECRET_DOMAIN}"
+    server: "${NAS_ADDR:-0.0.0.0}"
     path: /volume11/MyMindInAI/images-dev
   mountOptions:
     - nconnect=8
