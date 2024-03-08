@@ -129,6 +129,16 @@
       },
       "separateMinorPatch": true
     },
+    {
+      "description": ["Volsync Group"],
+      "groupName": "Volsync",
+      "matchPackagePatterns": ["volsync"],
+      "matchDatasources": ["docker", "github-releases"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
     // custom versioning
     {
       "description": ["Use custom versioning for k3s"],
