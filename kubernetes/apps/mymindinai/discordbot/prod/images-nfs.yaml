@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mymindinai-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: mymindinai-nfs
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: "wanshitong.${SECRET_DOMAIN}"
+    path: /volume11/MyMindInAI/images
+  mountOptions:
+    - nconnect=8
+    - noatime
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mymindinai-images-nfs
+  namespace: mymindinai
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: mymindinai-nfs
+  resources:
+    requests:
+      storage: 10Gi
