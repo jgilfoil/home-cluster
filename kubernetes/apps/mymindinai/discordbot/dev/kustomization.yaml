@@ -9,5 +9,5 @@ resources:
 
 namespace: mymindinai-dev
 
-patchesStrategicMerge:
-- patch-deploy.yaml
+patches:
+- path: patch-deploy.yaml
