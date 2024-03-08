@@ -2,23 +2,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${APP}
+  name: &app discord-bot
   labels:
-    app: ${APP}
+    app: *app
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: ${APP}
+      app: *app
   template:
     metadata:
       labels:
-        app: ${APP}
+        app: *app
     spec:
       containers:
-      - name: discord-bot
+      - name: *app
         image: jgilfoil/mymindinai-discordbot:latest
         env:
         - name: DISCORD_BOT_TOKEN
