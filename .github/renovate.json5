@@ -92,9 +92,10 @@
       "description": "Auto-merge System Apps",
       "matchDatasources": ["helm"],
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["minor"],
       "matchPackagePatterns": [
-        "kured"
+        "kured",
+        "cert-manager"
       ]
     },
     // groups
