@@ -1,0 +1,37 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup-downloads
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backupdownloads
+              image: busybox
+              command: ["/bin/sh"]
+              args: ["-c", "tar czf /backups/containers/transmission/downloads-$(date +'%y-%m').tar /downloads"]
+              volumeMounts:
+              - name: backups
+                mountPath: /backups
+              - name: downloads
+                mountPath: /downloads
+          volumes:
+          - name: backups
+            nfs:
+              server: "wanshitong.${SECRET_DOMAIN}"
+              path: /volume1/Backup
+          - name: downloads
+            nfs:
+              server: "wanshitong.${SECRET_DOMAIN}"
+              path: /volume9/downloads

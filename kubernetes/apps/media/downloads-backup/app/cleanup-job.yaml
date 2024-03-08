@@ -1,0 +1,31 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cleanup-downloads
+  namespace: ${NAMESPACE}
+spec:
+  schedule: "@daily"
+  concurrencyPolicy: "Forbid"
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 3
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: findanddelete
+              image: busybox
+              command: ["/bin/sh"]
+              args: ["-c", "find /backups/containers/transmission/ -name 'downloads-*.tar' -mtime +180 -delete"]
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              nfs:
+                server: "wanshitong.${SECRET_DOMAIN}"
+                path: /volume1/Backup
