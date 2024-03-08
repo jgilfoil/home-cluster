@@ -92,9 +92,20 @@
       "description": "Auto-merge System Apps",
       "matchDatasources": ["helm"],
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["minor"],
       "matchPackagePatterns": [
-        "kured"
+        "kured",
+        "cert-manager"
+      ]
+    },
+    {
+      "description": "Auto-merge TaskFile stuff",
+      "matchDatasources": ["github-releases", "docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "major"],
+      "matchPackagePatterns": [
+        "prometheus-operator/prometheus-operator",
+        "ghcr.io/siderolabs/installer"
       ]
     },
     // groups
@@ -133,7 +144,7 @@
       "description": ["Volsync Group"],
       "groupName": "Volsync",
       "matchPackagePatterns": ["volsync"],
-      "matchDatasources": ["docker", "github-releases"],
+      "matchDatasources": ["docker", "helm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       },
