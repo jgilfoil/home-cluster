@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: busybox-shell
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: busybox-shell
+  template:
+    metadata:
+      labels:
+        app: busybox-shell
+    spec:
+      containers:
+      - name: ubuntu
+        image: ubuntu:latest
+        args:
+          - sleep
+          - "3600"
+        volumeMounts:
+        - name: downloads
+          mountPath: /downloads
+        - name: media
+          mountPath: /media
+      volumes:
+      - name: downloads
+        nfs:
+          path: /volume9/downloads
+          server: <redacted>
+      - name: media
+        nfs:
+          path: /volume2/Media/
+          server: <redacted>
