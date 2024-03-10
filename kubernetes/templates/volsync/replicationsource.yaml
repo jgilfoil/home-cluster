@@ -22,6 +22,6 @@ spec:
       fsGroup: 568
     retain:
       hourly: 9
-      daily: 15
+      daily: 7
       weekly: 3
       monthly: 3
