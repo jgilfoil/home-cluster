@@ -13,5 +13,3 @@ resources:
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./transmission/ks.yaml
-  - ./kube-vip-testing/ks.yaml
-  
