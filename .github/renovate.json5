@@ -108,6 +108,15 @@
         "ghcr.io/siderolabs/installer"
       ]
     },
+    {
+      "description": "Auto-merge Misc Apps",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": [
+        "homepage"
+      ]
+    },
     // groups
     {
       "description": ["Flux Group"],
