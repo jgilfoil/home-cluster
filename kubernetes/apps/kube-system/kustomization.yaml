@@ -11,3 +11,4 @@ resources:
   - ./node-feature-discovery/ks.yaml
   - ./intel-device-plugin/ks.yaml
   - ./kured/ks.yaml
+  - ./kube-vip/ks.yaml
