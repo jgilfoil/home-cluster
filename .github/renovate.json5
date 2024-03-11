@@ -79,7 +79,7 @@
     },
     {
       "description": "Auto-merge Observability Apps",
-      "matchDatasources": ["docker"],
+      "matchDatasources": ["docker", "helm"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
