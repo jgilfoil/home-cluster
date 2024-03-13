@@ -95,7 +95,9 @@
       "matchUpdateTypes": ["patch"],
       "matchPackagePatterns": [
         "kured",
-        "cert-manager"
+        "cert-manager",
+        "node-feature-discovery",
+        "k8s-gateway"
       ]
     },
     {
