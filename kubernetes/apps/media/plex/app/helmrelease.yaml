@@ -17,11 +17,11 @@ spec:
   install:
     remediation:
       retries: 3
-      strategy: uninstall
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
+      strategy: uninstall
   uninstall:
     keepHistory: false
   dependsOn:
