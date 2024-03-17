@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -21,6 +21,7 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+      strategy: uninstall
   uninstall:
     keepHistory: false
   dependsOn:
@@ -35,11 +36,11 @@ spec:
       annotations:
         setGateway: "true"
     controllers:
-      main:
+      sonarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.2.1341@sha256:e7e1a75fa1586559f91d5e26caac72f96f1e18ae01ccb2d7c7ce589a3bedaca4
@@ -83,12 +84,13 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
     service:
-      main:
+      app:
+        controller: sonarr
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
         className: internal
         annotations:
@@ -105,14 +107,13 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        enabled: true
         existingClaim: sonarr
       tmp:
         type: emptyDir
@@ -121,20 +122,18 @@ spec:
         server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume2/Media
         advancedMounts:
-          main:
-            main:
+          sonarr:
+            app:
               - path: /media
                 readOnly: false
               - path: /downloads
                 readOnly: false
                 subPath: Downloads
       scripts:
-        enabled: true
         type: configMap
         name: reverse-symlink
         defaultMode: 0777
       healthcheck:
-        enabled: true
         type: configMap
         name: ${APP}-health-check
         defaultMode: 0755
