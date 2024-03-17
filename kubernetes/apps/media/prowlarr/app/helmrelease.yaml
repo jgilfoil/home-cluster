@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -20,6 +20,7 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+      strategy: uninstall
   uninstall:
     keepHistory: false
   dependsOn:
@@ -34,11 +35,11 @@ spec:
       annotations:
         setGateway: "true"
     controllers:
-      main:
+      prowlarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/prowlarr-develop
               tag: 1.14.1.4316@sha256:882daa1e28f989bc6d76ea7ab7e729da3d9a7a67714e6db606a8ef45a6e6c14b
@@ -84,13 +85,13 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
     service:
-      main:
+      app:
+        controller: prowlarr
         ports:
           http:
             port: *port
     ingress:
-      main:
-        enabled: true
+      app:
         className: internal
         annotations:
           gethomepage.dev/enabled: "true"
@@ -106,19 +107,17 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        enabled: true
         existingClaim: prowlarr
       tmp:
         type: emptyDir
       healthcheck:
-        enabled: true
         type: configMap
         name: ${APP}-health-check
         defaultMode: 0755
