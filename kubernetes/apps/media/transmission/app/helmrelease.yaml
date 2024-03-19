@@ -140,7 +140,6 @@ spec:
     persistence:
       config:
         existingClaim: transmission
-        mountPath: /config
       media:
         type: nfs
         server: "${NAS_ADDR:-0.0.0.0}"
@@ -153,5 +152,3 @@ spec:
               - path: /downloads
                 readOnly: false
                 subPath: Downloads
-      watch:
-        mountPath: /watch
