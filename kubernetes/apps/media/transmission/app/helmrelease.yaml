@@ -3,13 +3,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: transmission
+  name: &app transmission
 spec:
   interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.0.4
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -21,6 +21,7 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+      strategy: uninstall
   uninstall:
     keepHistory: false
   dependsOn:
@@ -35,11 +36,11 @@ spec:
       annotations:
         setGateway: "true"
     controllers:
-      main:
+      transmission:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/transmission
               tag: "4.0.5"
@@ -62,8 +63,7 @@ spec:
               liveness: &probes
                 enabled: false
               readiness: *probes
-              startup:
-                enabled: false
+              startup: *probes
             resources:
               requests:
                 cpu: 100m
@@ -78,13 +78,14 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
     service:
-      main:
+      app:
+        controller: *app
+        nameOverride: *app
         ports:
           http:
             port: *port
       bittorrent-tcp:
-        enabled: true
-        controller: main
+        controller: *app
         type: ClusterIP
         ports:
           bittorrent-tcp:
@@ -93,8 +94,7 @@ spec:
             protocol: TCP
             targetPort: 27071
       utptcp:
-        enabled: false
-        controller: main
+        controller: *app
         type: ClusterIP
         ports:
           utptcp:
@@ -132,31 +132,23 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
     persistence:
       config:
-        enabled: true
         existingClaim: transmission
-        mountPath: /config
       media:
-        enabled: true
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NAS_ADDR:-0.0.0.0}"
-            path: /volume2/Media/
+        type: nfs
+        server: "${NAS_ADDR:-0.0.0.0}"
+        path: /volume2/Media
         advancedMounts:
-          main:
-            main:
+          transmission:
+            app:
               - path: /media
                 readOnly: false
               - path: /downloads
                 readOnly: false
                 subPath: Downloads
-      watch:
-        enabled: false
-        mountPath: /watch
