@@ -21,7 +21,6 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-      strategy: uninstall
   uninstall:
     keepHistory: false
   values:
