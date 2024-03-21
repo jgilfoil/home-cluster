@@ -136,7 +136,7 @@
     },
     {
       "description": "Auto-merge Misc Apps",
-      "matchDatasources": ["docker"],
+      "matchDatasources": ["docker", "helm"],
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
