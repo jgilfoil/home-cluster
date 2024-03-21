@@ -101,6 +101,30 @@
       ]
     },
     {
+      "description": "Auto-merge Storage Apps",
+      "matchDatasources": ["docker", "helm"],
+      "automerge": true,
+      "matchUpdateTypes": ["patch"],
+      "matchPackagePatterns": [
+        "minio",
+        "openebs",
+        "volsync"
+      ]
+    },
+    {
+      "description": "Auto-merge Network Apps",
+      "matchDatasources": ["docker", "helm"],
+      "automerge": true,
+      "matchUpdateTypes": ["patch"],
+      "matchPackagePatterns": [
+        "cloudflared",
+        "echo-server",
+        "external-dns",
+        "ingress-nginx",
+        "k8s-gateway"
+      ]
+    },
+    {
       "description": "Auto-merge TaskFile stuff",
       "matchDatasources": ["github-releases", "docker"],
       "automerge": true,
@@ -116,7 +140,8 @@
       "automerge": true,
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
-        "homepage"
+        "homepage",
+        "reloader"
       ]
     },
     // groups
