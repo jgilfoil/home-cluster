@@ -12,5 +12,4 @@ resources:
   - ./intel-device-plugin/ks.yaml
   - ./kured/ks.yaml
   - ./kube-vip/ks.yaml
-  - ./coredns/ks.yaml
-  
+  # - ./coredns/ks.yaml
