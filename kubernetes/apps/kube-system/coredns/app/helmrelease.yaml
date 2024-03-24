@@ -14,9 +14,9 @@ spec:
         kind: HelmRepository
         name: coredns
         namespace: flux-system
-  install:
-    remediation:
-      retries: 3
+  # install:
+  #   remediation:
+  #     retries: 10
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -25,7 +25,7 @@ spec:
   values:
     fullnameOverride: coredns
     priorityClassName: "system-cluster-critical"
-    replicaCount: 3
+    replicaCount: 2
     k8sAppLabelOverride: kube-dns
     serviceAccount:
       create: true
