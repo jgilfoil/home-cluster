@@ -26,11 +26,11 @@ spec:
     fullnameOverride: *app
     priorityClassName: "system-cluster-critical"
     replicaCount: 2
-    k8sAppLabelOverride: kube-dns-interim
+    k8sAppLabelOverride: &label kube-dns-interim
     serviceAccount:
       create: true
     service:
-      name: kube-dns
+      name: *label
       clusterIP: 10.96.0.11
     servers:
       - zones:
