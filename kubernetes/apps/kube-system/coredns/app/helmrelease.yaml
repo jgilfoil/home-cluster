@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: coredns
+  name: &app coredns-interim
 spec:
   interval: 30m
   chart:
@@ -14,16 +14,16 @@ spec:
         kind: HelmRepository
         name: coredns
         namespace: flux-system
-  # install:
-  #   remediation:
-  #     retries: 10
+  install:
+    remediation:
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
       strategy: uninstall
       retries: 3
   values:
-    fullnameOverride: coredns
+    fullnameOverride: *app
     priorityClassName: "system-cluster-critical"
     replicaCount: 2
     k8sAppLabelOverride: kube-dns
@@ -31,7 +31,7 @@ spec:
       create: true
     service:
       name: kube-dns
-      clusterIP: 10.96.0.10
+      clusterIP: 10.96.0.11
     servers:
       - zones:
           - zone: .
@@ -79,4 +79,4 @@ spec:
         whenUnsatisfiable: DoNotSchedule
         labelSelector:
           matchLabels:
-            app.kubernetes.io/instance: coredns
+            app.kubernetes.io/instance: *app
