@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: &app coredns-interim
+  name: &app coredns
 spec:
   interval: 30m
   chart:
@@ -26,12 +26,12 @@ spec:
     fullnameOverride: *app
     priorityClassName: "system-cluster-critical"
     replicaCount: 2
-    k8sAppLabelOverride: &label kube-dns-interim
+    k8sAppLabelOverride: &label kube-dns
     serviceAccount:
       create: true
     service:
       name: *label
-      clusterIP: 10.96.0.11
+      clusterIP: 10.96.0.10
     servers:
       - zones:
           - zone: .
