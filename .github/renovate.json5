@@ -63,6 +63,13 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
+      "description": ["Auto merge Bootstrap and Ansible Files"],
+      "automerge": true,
+      "automergeType": "branch",
+      "ignoreTests": true,
+      "matchFileNames": ["ansible/**", "bootstrap/**"],
+    },
+    {
       "description": "Auto-merge Media Apps",
       "matchDatasources": ["docker"],
       "automerge": true,
