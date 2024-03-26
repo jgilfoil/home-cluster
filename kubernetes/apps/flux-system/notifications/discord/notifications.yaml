@@ -1,0 +1,35 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: discord-flux-alerts
+spec:
+  type: discord
+  secretRef:
+    name: discord-flux-alerts-webhook-url
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Alert
+metadata:
+  name: home-cluster-alerts
+spec:
+  summary: "cluster deployments"
+  eventMetadata:
+    cluster: "home-cluster"
+    owner: "durden"
+  providerRef:
+    name: discord-flux-alerts
+  eventSeverity: error
+  eventSources:
+    - kind: GitRepository
+      name: "*"
+    - kind: Kustomization
+      name: "*"
+    - kind: HelmRepository
+      name: "*"
+    - kind: HelmRelease
+      name: "*"
+  exclusionList:
+    - "error.*lookup github\\.com"
+    - "waiting.*socket"
+  suspend: false
