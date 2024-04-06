@@ -39,6 +39,18 @@ Modify the kustomization.yaml to include the CoreDNS kustomization.
 
 This will trigger the deployment of coredns from flux. This ensures that Flux takes over the management of the Helm install.
 
+### 5. Disable CoreDNS in k3s
+Modify `/etc/rancher/k3s/config.yaml` to add the following line for coredns, otherwise coredns will be overwritten by the k3s config the next time there's an update.
+
+```yaml
+disable:
+- flannel
+- local-storage
+- metrics-server
+- servicelb
+- traefik
+- coredns # Add this line
+```
 ## Verification
 To verify that CoreDNS has been successfully migrated and is managed by Flux, check the HelmRelease status:
 
