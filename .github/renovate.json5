@@ -151,6 +151,15 @@
         "reloader"
       ]
     },
+    {
+      "description": "Auto-merge Major Updates",
+      "matchDatasources": ["docker", "helm"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackagePatterns": [
+        "http-https-echo"
+      ]
+    },
     // groups
     {
       "description": ["Flux Group"],
