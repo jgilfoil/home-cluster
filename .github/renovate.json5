@@ -92,7 +92,8 @@
       "matchPackagePatterns": [
         "kube-prometheus-stack",
         "grafana",
-        "kubernetes-dashboard"
+        "kubernetes-dashboard",
+        "metrics-server"
       ]
     },
     {
@@ -115,7 +116,8 @@
       "matchPackagePatterns": [
         "minio",
         "openebs",
-        "volsync"
+        "volsync",
+        "snapshot-controller"
       ]
     },
     {
@@ -149,6 +151,15 @@
       "matchPackagePatterns": [
         "homepage",
         "reloader"
+      ]
+    },
+    {
+      "description": "Auto-merge Major Updates",
+      "matchDatasources": ["docker", "helm"],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch", "major"],
+      "matchPackagePatterns": [
+        "http-https-echo"
       ]
     },
     // groups
