@@ -42,8 +42,8 @@ spec:
           - "alertmanager.${SECRET_DOMAIN}"
       alertmanagerSpec:
         replicas: 3
-        useExistingSecret: true
-        configSecret: alertmanager-secret
+        useExistingSecret: false
+        # configSecret: alertmanager-secret
         storage:
           volumeClaimTemplate:
             spec:
