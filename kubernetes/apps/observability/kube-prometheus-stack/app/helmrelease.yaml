@@ -33,7 +33,25 @@ spec:
       enabled: true
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      enabled: false
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: internal
+        hosts: 
+          - "alertmanager.${SECRET_DOMAIN}"
+      alertmanagerSpec:
+        replicas: 3
+        useExistingSecret: true
+        configSecret: alertmanager-secret
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-hostpath
+              resources:
+                requests:
+                  storage: 1Gi
+    kubeStateMetrics:
+      enabled: true
     kube-state-metrics:
       metricLabelsAllowlist:
         - "deployments=[*]"
