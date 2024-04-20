@@ -167,3 +167,7 @@ spec:
           multicluster:
             etcd:
               enabled: true
+  valuesFrom:
+  - kind: Secret
+    name: "alertmanager-config"
+    optional: false
