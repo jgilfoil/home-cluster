@@ -24,6 +24,10 @@ data:
         - flux-cluster-template:
             - icon: github-light.png
               href: https://github.com/onedr0p/flux-cluster-template
+    - Logs:
+        - Renovate:
+            - icon: https://docs.renovatebot.com/assets/images/logo.png
+              href: https://developer.mend.io/github/jgilfoil/home-cluster
   docker.yaml: ""
   kubernetes.yaml: |
     mode: cluster
