@@ -33,6 +33,7 @@ spec:
       enabled: true
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
+      enabled: false
       ingress:
         enabled: true
         pathType: Prefix
