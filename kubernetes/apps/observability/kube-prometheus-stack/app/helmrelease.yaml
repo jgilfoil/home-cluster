@@ -38,6 +38,11 @@ spec:
         enabled: true
         pathType: Prefix
         ingressClassName: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/icon: alertmanager.png
+          gethomepage.dev/name: Alert Manager
+          gethomepage.dev/group: Observability
         hosts: 
           - "alertmanager.${SECRET_DOMAIN}"
       alertmanagerSpec:
