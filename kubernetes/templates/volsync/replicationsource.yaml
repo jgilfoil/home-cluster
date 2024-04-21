@@ -7,7 +7,7 @@ metadata:
 spec:
   sourcePVC: "${APP}"
   trigger:
-    schedule: "0 4 * * *" 
+    schedule: "0 10 * * *" # 10:00am UTC is 4:00am MDT
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 3
