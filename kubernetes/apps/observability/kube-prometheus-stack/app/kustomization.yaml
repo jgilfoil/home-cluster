@@ -6,3 +6,4 @@ resources:
   - ./secret.sops.yaml
   - ./scrapeconfig.yaml
   - ./minio-bearer.secret.sops.yaml
+  - ./minio-bucket-bearer.secret.sops.yaml
