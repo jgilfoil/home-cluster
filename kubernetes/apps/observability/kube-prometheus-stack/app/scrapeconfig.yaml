@@ -1,11 +1,14 @@
----
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: ScrapeConfig
 metadata:
   name: minio-scrape
 spec:
   scheme: HTTP
-  bearerToken: "{{MINIO_BEARER_TOKEN}}"
+  authorization:
+    type: Bearer
+    credentials:
+      name: minio-secret
+      key: token
   metricsPath: /minio/v2/metrics/cluster
   staticConfigs:
     - targets:

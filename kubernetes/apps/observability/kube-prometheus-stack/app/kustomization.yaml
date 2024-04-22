@@ -5,3 +5,4 @@ resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
   - ./scrapeconfig.yaml
+  - ./minio-bearer.secret.sops.yaml
