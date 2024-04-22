@@ -1,39 +1,37 @@
 apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+kind: ServiceMonitor
 metadata:
-  name: minio-scrape
+  name: minio-servicemonitor
 spec:
-  scheme: HTTP
-  authorization:
-    type: Bearer
-    credentials:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  namespaceSelector:
+    matchNames:
+      - storage
+  endpoints:
+  - port: http
+    path: /minio/v2/metrics/cluster
+    interval: 30s
+    bearerTokenSecret:
       name: minio-bearer
       key: token
-  metricsPath: /minio/v2/metrics/cluster
-  staticConfigs:
-    - targets:
-        - minio.storage.svc.cluster.local:9000
-  relabelings:
-    - action: replace
-      targetLabel: job
-      replacement: minio-scrape
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
-kind: ScrapeConfig
+kind: ServiceMonitor
 metadata:
-  name: minio-bucket-scrape
+  name: minio-bucket-servicemonitor
 spec:
-  scheme: HTTP
-  authorization:
-    type: Bearer
-    credentials:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  namespaceSelector:
+    matchNames:
+      - storage
+  endpoints:
+  - port: http
+    path: /minio/v2/metrics/bucket
+    interval: 30s
+    bearerTokenSecret:
       name: minio-bucket-bearer
       key: token
-  metricsPath: /minio/v2/metrics/bucket
-  staticConfigs:
-    - targets:
-        - minio.storage.svc.cluster.local:9000
-  relabelings:
-    - action: replace
-      targetLabel: job
-      replacement: minio-scrape
