@@ -4,7 +4,6 @@ kind: ScrapeConfig
 metadata:
   name: minio-scrape
 spec:
-  jobName: minio-job
   scheme: HTTP
   bearerToken: "{{MINIO_BEARER_TOKEN}}"
   metricsPath: /minio/v2/metrics/cluster
