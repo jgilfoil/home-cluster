@@ -1,0 +1,17 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-scrape
+spec:
+  jobName: minio-job
+  scheme: http
+  bearerToken: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoidjNadTNWU0kyVGUiLCJleHAiOjQ4NjczNTIwMTZ9.I_pmkXvepJDEMGjL8zC0Fulajf7adPEyjhqK7RxWql3vbuZI7E2LdtqoMNXimFcciyEApZbgxe3fQN55TBqmVA
+  metricsPath: /minio/v2/metrics/cluster
+  staticConfigs:
+    - targets:
+        - minio.storage.svc.cluster.local:9000
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: minio-scrape
