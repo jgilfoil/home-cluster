@@ -165,35 +165,35 @@ spec:
               resources:
                 requests:
                   storage: 10Gi
-            additionalServiceMonitors:
-              - name: minio
-                selector:
-                  matchLabels:
-                    app.kubernetes.io/name: minio  
-                namespaceSelector:
-                  matchNames:
-                    - storage
-                endpoints:
-                  - port: http
-                    path: /minio/v2/metrics/cluster
-                    interval: 30s
-                    bearerTokenSecret:
-                      name: minio-bearer
-                      key: token
-              - name: minio-bucket
-                selector:
-                  matchLabels:
-                    app.kubernetes.io/name: minio  
-                namespaceSelector:
-                  matchNames:
-                    - storage
-                endpoints:
-                  - port: http
-                    path: /minio/v2/metrics/bucket
-                    interval: 30s
-                    bearerTokenSecret:
-                      name: minio-bucket-bearer
-                      key: token
+        additionalServiceMonitors:
+          - name: minio
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: minio  
+            namespaceSelector:
+              matchNames:
+                - storage
+            endpoints:
+              - port: http
+                path: /minio/v2/metrics/cluster
+                interval: 30s
+                bearerTokenSecret:
+                  name: minio-bearer
+                  key: token
+          - name: minio-bucket
+            selector:
+              matchLabels:
+                app.kubernetes.io/name: minio  
+            namespaceSelector:
+              matchNames:
+                - storage
+            endpoints:
+              - port: http
+                path: /minio/v2/metrics/bucket
+                interval: 30s
+                bearerTokenSecret:
+                  name: minio-bucket-bearer
+                  key: token
     grafana:
       enabled: false
       forceDeployDashboards: true
