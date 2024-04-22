@@ -7,7 +7,7 @@ spec:
   authorization:
     type: Bearer
     credentials:
-      name: minio-secret
+      name: minio-bearer
       key: token
   metricsPath: /minio/v2/metrics/cluster
   staticConfigs:
