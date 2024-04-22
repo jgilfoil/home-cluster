@@ -1,4 +1,4 @@
-apiVersion: monitoring.coreos.com/v1alpha1
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: minio-servicemonitor
@@ -17,7 +17,7 @@ spec:
       name: minio-bearer
       key: token
 ---
-apiVersion: monitoring.coreos.com/v1alpha1
+apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: minio-bucket-servicemonitor
