@@ -17,3 +17,30 @@ spec:
     - action: replace
       targetLabel: job
       replacement: minio-scrape
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: minio-bucket-scrape
+spec:
+  scheme: HTTP
+  authorization:
+    type: Bearer
+    credentials:
+      name: minio-bucket-bearer
+      key: token
+  metricsPath: /minio/v2/metrics/bucket
+  staticConfigs:
+    - targets:
+        - minio.storage.svc.cluster.local:9000
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: minio-scrape
+
+scrape_configs:
+  bearer_token: eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJwcm9tZXRoZXVzIiwic3ViIjoidjNadTNWU0kyVGUiLCJleHAiOjQ4NjczNTcwMTd9.fJEUGe8helBglRbgNqzKrS8o1oFQXIBW8PAQnrMMSeNmr0eP0-iYlA1ECBL8Oq8D1sUIUKrFh-JTcNlXl3P35g
+  metrics_path: /minio/v2/metrics/bucket
+  scheme: http
+  static_configs:
+  - targets: ['minio.storage.svc.cluster.local:9000']
