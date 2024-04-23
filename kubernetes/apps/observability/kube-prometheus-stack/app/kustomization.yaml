@@ -4,5 +4,3 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-  - ./minio-bearer.secret.sops.yaml
-  - ./minio-bucket-bearer.secret.sops.yaml
