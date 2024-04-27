@@ -87,7 +87,6 @@ spec:
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          jason.test: "true"
         hosts:
           - host: &host "{{ .Release.Name }}-external.${SECRET_DOMAIN}"
             paths:
@@ -100,8 +99,6 @@ spec:
               - *host
       internal:
         className: internal
-        annotations:
-          jason.test: "true"
         hosts:
           - host: &host "{{ .Release.Name }}-internal.${SECRET_DOMAIN}"
             paths:
