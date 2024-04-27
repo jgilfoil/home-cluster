@@ -131,7 +131,8 @@
         "external-dns",
         "ingress-nginx",
         "k8s-gateway",
-        "cilium"
+        "cilium",
+        "ingress-nginx"
       ]
     },
     {
