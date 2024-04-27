@@ -19,7 +19,7 @@ spec:
     owner: "durden"
   providerRef:
     name: discord-flux-alerts
-  eventSeverity: info
+  eventSeverity: error
   eventSources:
     - kind: GitRepository
       name: "*"
