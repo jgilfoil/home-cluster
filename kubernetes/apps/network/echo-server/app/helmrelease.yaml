@@ -25,6 +25,8 @@ spec:
   values:
     controllers:
       echo-server:
+        annotations:
+          jason.test: "true"
         strategy: RollingUpdate
         containers:
           app:
