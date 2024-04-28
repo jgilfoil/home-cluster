@@ -48,13 +48,9 @@ spec:
       # startTime: "4:00"
       # endTime: "10:00"
       period: 0h10m0s
+      notifyUrl: "${SECRET_KURED_DISCORD_WEBHOOK}"
       messageTemplateDrain: "⏳ Draining node %s"
       messageTemplateReboot: "♻️ Rebooted node %s"
       messageTemplateUncordon: "✅ Uncordoned node %s"
       prometheusUrl: "http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090"
       alertFilterRegexp: "^(Watchdog|InfoInhibitor|CPUThrottlingHigh)$"
-    valuesFrom:
-      - targetPath: configuration.notifyUrl
-        kind: Secret
-        name: kured-discord-webhook
-        valuesKey: secret_key
