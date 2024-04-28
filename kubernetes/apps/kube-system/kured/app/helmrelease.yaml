@@ -51,7 +51,7 @@ spec:
       messageTemplateDrain: "⏳ Draining node %s"
       messageTemplateReboot: "♻️ Rebooted node %s"
       messageTemplateUncordon: "✅ Uncordoned node %s"
-      prometheusUrl: "http://prometheus.observability.svc.cluster.local"
+      prometheusUrl: "http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090"
     extraEnvVars:
       - name: notifyUrl
         valueFrom:
