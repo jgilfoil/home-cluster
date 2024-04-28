@@ -53,9 +53,8 @@ spec:
       messageTemplateUncordon: "✅ Uncordoned node %s"
       prometheusUrl: "http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090"
       alertFilterRegexp: "^(Watchdog|InfoInhibitor|CPUThrottlingHigh)$"
-    extraEnvVars:
-      - name: notifyUrl
-        valueFrom:
-          secretKeyRef:
-            name: kured-discord-webhook
-            key: secret_key
+    valuesFrom:
+      - targetPath: configuration.notifyUrl
+        kind: Secret
+        name: kured-discord-webhook
+        valuesKey: secret_key
