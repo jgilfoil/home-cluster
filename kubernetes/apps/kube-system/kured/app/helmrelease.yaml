@@ -52,6 +52,7 @@ spec:
       messageTemplateReboot: "♻️ Rebooted node %s"
       messageTemplateUncordon: "✅ Uncordoned node %s"
       prometheusUrl: "http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090"
+      alertFilterRegexp: "^(Watchdog|InfoInhibitor|CPUThrottlingHigh)$"
     extraEnvVars:
       - name: notifyUrl
         valueFrom:
