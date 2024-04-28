@@ -47,6 +47,7 @@ spec:
       timeZone: "America/Denver"
       # startTime: "4:00"
       # endTime: "10:00"
+      period: 0h10m0s
       messageTemplateDrain: "⏳ Draining node %s"
       messageTemplateReboot: "♻️ Rebooted node %s"
       messageTemplateUncordon: "✅ Uncordoned node %s"
