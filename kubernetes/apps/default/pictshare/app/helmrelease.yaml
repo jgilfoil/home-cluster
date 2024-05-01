@@ -72,5 +72,5 @@ spec:
         advancedMounts:
           pictshare:
             app:
-              - path: /data/pictshareuploads
+              - path: /var/www/data
                 readOnly: false
