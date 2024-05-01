@@ -48,11 +48,6 @@ spec:
       app:
         className: external
         annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Media
-          gethomepage.dev/name: Pictshare
-          gethomepage.dev/icon: https://raw.githubusercontent.com/HaschekSolutions/pictshare/master/css/imgs/logo/logo.svg
-          gethomepage.dev/description: Image Sharing Service
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - host: &host snapshots.${SECRET_DOMAIN}
@@ -67,6 +62,12 @@ spec:
               - *host
       internal:
         className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: Pictshare
+          gethomepage.dev/icon: https://raw.githubusercontent.com/HaschekSolutions/pictshare/master/css/imgs/logo/logo.svg
+          gethomepage.dev/description: Image Sharing Service
         hosts:
           - host: *host
             paths:
