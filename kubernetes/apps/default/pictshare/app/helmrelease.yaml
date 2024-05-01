@@ -1,0 +1,75 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: &app pictshare
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.1.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      pictshare:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: 
+              repository: ghcr.io/hascheksolutions/pictshare
+              tag: 2.0.1
+            env:
+              TZ: ${TIMEZONE}
+              ALLOWED_SUBNET: "192.168.1.0/24"
+              LOG_UPLOADER: "true"
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+    ingress:
+      app:
+        className: internal
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: Pictshare
+          gethomepage.dev/icon: https://raw.githubusercontent.com/HaschekSolutions/pictshare/master/css/imgs/logo/logo.svg
+          gethomepage.dev/description: Image Sharing Service
+        hosts:
+          - host: &host snapshots.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      uploads:
+        type: nfs
+        server: "${NAS_ADDR:-0.0.0.0}"
+        path: /volume2/Media/pictshare
+        advancedMounts:
+          pictshare:
+            app:
+              - path: /data/pictshareuploads
+                readOnly: false
