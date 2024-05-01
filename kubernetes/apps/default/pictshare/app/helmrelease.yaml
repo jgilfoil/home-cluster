@@ -30,8 +30,9 @@ spec:
           reloader.stakater.com/auto: "true"
         containers:
           app:
-            image: ghcr.io/hascheksolutions/pictshare
-            tag: 2.0.1
+            image: 
+              repository: ghcr.io/hascheksolutions/pictshare
+              tag: 2.0.1
         env:
           TZ: ${TIMEZONE}
           ALLOWED_SUBNET: "192.168.1.0/24"
