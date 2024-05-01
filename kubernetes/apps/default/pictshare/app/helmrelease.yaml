@@ -69,7 +69,7 @@ spec:
         server: "${NAS_ADDR:-0.0.0.0}"
         path: /volume2/Media/pictshare
         advancedMounts:
-          radarr:
+          pictshare:
             app:
               - path: /data/pictshareuploads
                 readOnly: false
