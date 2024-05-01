@@ -37,6 +37,7 @@ spec:
               TZ: ${TIMEZONE}
               ALLOWED_SUBNET: "192.168.1.0/24"
               LOG_UPLOADER: "true"
+              URL: snapshots.${SECRET_DOMAIN}/
     service:
       app:
         controller: *app
@@ -71,5 +72,5 @@ spec:
         advancedMounts:
           pictshare:
             app:
-              - path: /data/pictshareuploads
+              - path: /var/www/data
                 readOnly: false
