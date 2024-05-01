@@ -46,13 +46,14 @@ spec:
             port: 80
     ingress:
       app:
-        className: internal
+        className: external
         annotations:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/group: Media
           gethomepage.dev/name: Pictshare
           gethomepage.dev/icon: https://raw.githubusercontent.com/HaschekSolutions/pictshare/master/css/imgs/logo/logo.svg
           gethomepage.dev/description: Image Sharing Service
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - host: &host snapshots.${SECRET_DOMAIN}
             paths:
@@ -64,6 +65,16 @@ spec:
         tls:
           - hosts:
               - *host
+      internal:
+        className: internal
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
     persistence:
       uploads:
         type: nfs
