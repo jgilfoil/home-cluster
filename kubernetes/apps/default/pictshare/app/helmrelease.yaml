@@ -37,7 +37,7 @@ spec:
               TZ: ${TIMEZONE}
               ALLOWED_SUBNET: "192.168.1.0/24"
               LOG_UPLOADER: "true"
-              URL: snapshots.${SECRET_DOMAIN}/
+              URL: https://snapshots.${SECRET_DOMAIN}/
     service:
       app:
         controller: *app
