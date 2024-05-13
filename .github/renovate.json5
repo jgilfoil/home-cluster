@@ -152,7 +152,8 @@
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
         "homepage",
-        "reloader"
+        "reloader",
+        "morphy2k/rss-forwarder"
       ]
     },
     {
