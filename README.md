@@ -4,7 +4,7 @@
   # My Home Kubernetes
   
 <!-- k3s_version_badge_start -->
-[![k3s version](https://img.shields.io/badge/k3s-v1.29.4%2Bk3s1-blue?style=for-the-badge&logo=kubernetes&logoColor=white)](https://k3s.io/)
+[![k3s version](https://img.shields.io/badge/k3s-v1.30.0%2Bk3s1-blue?style=for-the-badge&logo=kubernetes&logoColor=white)](https://k3s.io/)
 <!-- k3s_version_badge_end -->
 </div>
 
