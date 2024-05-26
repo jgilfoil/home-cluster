@@ -28,12 +28,7 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: storage
-    - name: vpn-gateway
-      namespace: network
   values:
-    defaultPodOptions:
-      annotations:
-        setGateway: "true"
     controllers:
       overseerr:
         annotations:
