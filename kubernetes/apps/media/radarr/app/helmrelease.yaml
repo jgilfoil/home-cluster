@@ -99,7 +99,7 @@ spec:
           gethomepage.dev/description: Movie Download Manager
           gethomepage.dev/widget.type: radarr
           gethomepage.dev/widget.url: http://radarr.media.svc
-          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_RADARR_TOKEN:temp}}` }}"
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_RADARR_TOKEN}}` }}"
         hosts:
           - host: &host "radarr.${SECRET_DOMAIN}"
             paths:
