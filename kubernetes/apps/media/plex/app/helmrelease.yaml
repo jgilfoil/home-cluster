@@ -100,7 +100,7 @@ spec:
           gethomepage.dev/description: Media Player
           gethomepage.dev/widget.type: plex
           gethomepage.dev/widget.url: http://plex.media.svc:32400
-          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PLEX_TOKEN:null}}"
           # external-dns.alpha.kubernetes.io/target: external.${SECRET_DOMAIN}
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         hosts:
