@@ -100,7 +100,7 @@ spec:
           gethomepage.dev/description: Torrent Indexer Management
           gethomepage.dev/widget.type: prowlarr
           gethomepage.dev/widget.url: http://prowlarr.media.svc
-          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_PROWLARR_TOKEN:null}}"
+          gethomepage.dev/widget.key: "{{ `{{HOMEPAGE_VAR_PROWLARR_TOKEN}}` }}"
         hosts:
           - host: &host "prowlarr.${SECRET_DOMAIN}"
             paths:
