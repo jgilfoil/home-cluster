@@ -94,7 +94,7 @@ spec:
           gethomepage.dev/description: Request Management
           gethomepage.dev/widget.type: overseerr
           gethomepage.dev/widget.url: http://overseerr.media
-          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_OVERSEERR_TOKEN:null}}"
+          gethomepage.dev/widget.key: "{{HOMEPAGE_VAR_OVERSEERR_TOKEN:temp}}"
         hosts:
           - host: &host overseerr.${SECRET_DOMAIN}
             paths:
