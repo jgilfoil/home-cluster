@@ -27,3 +27,4 @@ resources:
   - ./stakater.yaml
   - ./xenitab.yaml
   - ./cloudnative-pg.yaml
+  - ./open-webui.yaml
