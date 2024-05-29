@@ -27,5 +27,5 @@ spec:
     substitute:
       APP: *app
       NAMESPACE: *namespace
-      VOLSYNC_CAPACITY: 100Gi
-      VOLSYNC_CACHE_CAPCITY: 20Gi
+      VOLSYNC_CAPACITY: 1Gi
+      VOLSYNC_CACHE_CAPCITY: 1Gi
