@@ -6,4 +6,4 @@ resources:
   # - ./cluster16.yaml
   - ./scheduledbackup.yaml
   - ./prometheusrule.yaml
-  - ./service.yaml
+  # - ./service.yaml
