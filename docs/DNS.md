@@ -30,7 +30,7 @@ Install the CoreDNS Helm chart with the version specified in the HelmRelease fil
 helm install coredns coredns/coredns \
   --version 1.29.0 \ # Replace with the current version
   --namespace kube-system \
-  --values values.yaml
+  --values ./kubernetes/apps/kube-system/coredns/app/values.yaml
 ```
 ### 4. Update Kustomization for Flux
 Modify the kustomization.yaml to include the CoreDNS kustomization.

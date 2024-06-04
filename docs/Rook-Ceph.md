@@ -1,5 +1,21 @@
 # Rook-Ceph Notes
 
+## Maintenance
+
+### Start Maintenance mode
+```
+ceph osd set noout
+ceph osd set nobackfill
+ceph osd set norecover
+```
+
+### End Maintenance mode
+```
+ceph osd unset noout
+ceph osd unset nobackfill
+ceph osd unset norecover
+```
+
 ## Troubleshooting
 
 ### Abandoned OSDs
