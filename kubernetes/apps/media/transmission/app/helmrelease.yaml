@@ -47,7 +47,7 @@ spec:
               TZ: "America/Denver"
               TRANSMISSION__BLOCKLIST_URL: "https://mirror.codebucket.de/transmission/blocklist.p2p.gz"
               TRANSMISSION_RPC_PASSWORD: "${SECRET_TRANSMISSION_RPC_PASSWORD}"
-              TRANSMISSION__DOWNLOAD_DIR: "/downloads"
+              TRANSMISSION__DOWNLOAD_DIR: "/media/Downloads"
               TRANSMISSION__INCOMPLETE_DIR_ENABLED: false
               TRANSMISSION__RPC_PORT: &port 9091
               TRANSMISSION__PEER_PORT: &peerport 27071
