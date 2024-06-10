@@ -4,9 +4,9 @@ kind: Deployment
 metadata:
   name: discord-bot
 spec:
+  replicas: 0
   template:
     spec:
-      replicas: 0
       containers:
       - name: discord-bot
         env:
