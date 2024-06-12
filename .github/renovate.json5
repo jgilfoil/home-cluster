@@ -320,21 +320,13 @@
       "matchDatasources": ["docker"],
       "matchPackageNames": ["jgilfoil/mymindinai-discordbot"],
       "matchPaths": ["kubernetes/apps/mymindinai/discordbot/dev/patch-deploy.yaml"],
-      "separateMajorMinor": true,
-      "separateMinorPatch": true,
-      "separateMultipleMajor": true,
-      "separateMultipleMinor": true,
-      "separateMultiplePatch": true
+      "additionalBranchPrefix": "dev-"
     },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["jgilfoil/mymindinai-discordbot"], 
       "matchPaths": ["kubernetes/apps/mymindinai/discordbot/prod/patch-deploy.yaml"],
-      "separateMajorMinor": true,
-      "separateMinorPatch": true,
-      "separateMultipleMajor": true,
-      "separateMultipleMinor": true,
-      "separateMultiplePatch": true
+      "additionalBranchPrefix": "prod-"
     },
     // labels
     {
