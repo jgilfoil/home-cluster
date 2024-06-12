@@ -9,6 +9,7 @@ spec:
     spec:
       containers:
       - name: discord-bot
+        image: jgilfoil/mymindinai-discordbot:v0.0.13
         env:
         - name: LOG_LEVEL
           valueFrom:
