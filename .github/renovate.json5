@@ -106,8 +106,7 @@
         "cert-manager",
         "node-feature-discovery",
         "k8s-gateway",
-        "descheduler",
-
+        "descheduler"
       ]
     },
     {
