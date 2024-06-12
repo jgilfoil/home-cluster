@@ -105,7 +105,9 @@
         "kured",
         "cert-manager",
         "node-feature-discovery",
-        "k8s-gateway"
+        "k8s-gateway",
+        "descheduler",
+
       ]
     },
     {
@@ -334,7 +336,7 @@
       "separateMultipleMajor": true,
       "separateMultipleMinor": true,
       "separateMultiplePatch": true
-    }
+    },
     // labels
     {
       "matchUpdateTypes": ["major"],
