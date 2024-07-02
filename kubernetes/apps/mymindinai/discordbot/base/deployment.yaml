@@ -31,6 +31,21 @@ spec:
             secretKeyRef:
               name: discordbot-secrets
               key: MIDJOURNEY_BOT_ID
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: S3_BUCKET_NAME
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_SECRET_ACCESS_KEY
         volumeMounts:
           - mountPath: /app/images
             name: images
