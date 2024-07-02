@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/sonarr
-              tag: 4.0.5
+              tag: 4.0.6
             env:
               TZ: "America/Denver"
               SONARR__THEME: dark
