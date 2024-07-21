@@ -154,7 +154,8 @@
       "matchPackagePatterns": [
         "homepage",
         "reloader",
-        "morphy2k/rss-forwarder"
+        "morphy2k/rss-forwarder",
+        "open-webui"
       ]
     },
     {
