@@ -155,7 +155,8 @@
         "homepage",
         "reloader",
         "morphy2k/rss-forwarder",
-        "open-webui"
+        "open-webui",
+        "descheduler"
       ]
     },
     {
