@@ -73,7 +73,7 @@
       "description": "Auto-merge Media Apps",
       "matchDatasources": ["docker"],
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "matchPackagePatterns": [
         "prowlarr",
         "sonarr",
