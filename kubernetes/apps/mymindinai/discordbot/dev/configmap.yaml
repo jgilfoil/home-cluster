@@ -6,3 +6,4 @@ metadata:
 data:
   LOG_LEVEL: "DEBUG"
   EMOJI_STRING: "🧪"
+  SREF_REACT: "🧑"
