@@ -21,3 +21,8 @@ spec:
             configMapKeyRef:
               name: discordbot-config
               key: EMOJI_STRING
+        - name: SREF_REACT
+          valueFrom:
+            configMapKeyRef:
+              name: discordbot-config
+              key: SREF_REACT
