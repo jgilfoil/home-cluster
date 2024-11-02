@@ -84,16 +84,19 @@
       "schedule": ["after 9am every weekday, before 1pm every weekday"]
     },
     {
-      "description": "Auto-merge Media Digest Apps",
+      "description": "Auto-merge Plex Digest Updates",
       "matchDatasources": ["docker"],
       "automerge": true,
       "matchUpdateTypes": ["digest"],
-      "matchPackagePatterns": [
-        "plex"
-      ],
-      "schedule": ["after 9am every weekday, before 1pm every weekday"],
-      "versioning": "loose"
+      "matchPackagePatterns": ["plex"],
+      "schedule": ["after 9am every weekday, before 1pm every weekday"]
     },
+    {
+      "description": "Loose Versioning for Plex",
+      "matchDatasources": ["docker"],
+      "versioning": "loose",
+      "matchPackagePatterns": ["plex"]
+    },    
     {
       "description": "Auto-merge Observability Apps",
       "matchDatasources": ["docker", "helm"],
