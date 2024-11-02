@@ -73,13 +73,22 @@
       "description": "Auto-merge Media Apps",
       "matchDatasources": ["docker"],
       "automerge": true,
-      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchUpdateTypes": ["minor", "patch"],
       "matchPackagePatterns": [
         "prowlarr",
         "sonarr",
         "overseerr",
         "radarr",
-        "transmission",
+        "transmission"
+      ],
+      "schedule": ["after 9am every weekday, before 1pm every weekday"]
+    },
+    {
+      "description": "Auto-merge Media Digest Apps",
+      "matchDatasources": ["docker"],
+      "automerge": true,
+      "matchUpdateTypes": ["digest"],
+      "matchPackagePatterns": [
         "plex"
       ],
       "schedule": ["after 9am every weekday, before 1pm every weekday"]
