@@ -91,7 +91,8 @@
       "matchPackagePatterns": [
         "plex"
       ],
-      "schedule": ["after 9am every weekday, before 1pm every weekday"]
+      "schedule": ["after 9am every weekday, before 1pm every weekday"],
+      "versioning": "loose"
     },
     {
       "description": "Auto-merge Observability Apps",
