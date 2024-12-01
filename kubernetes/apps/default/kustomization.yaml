@@ -6,4 +6,4 @@ resources:
   - ./homepage/ks.yaml
   - ./discord-template-notifier/ks.yaml
   - ./pictshare/ks.yaml
-  # - ./open-webui/ks.yaml
+  - ./open-webui/ks.yaml
