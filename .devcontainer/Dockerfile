@@ -25,6 +25,12 @@ ENV SHELL=/usr/bin/fish
 # Install task (taskfile.dev)
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /usr/local/bin
 
+# Install k9s (Kubernetes CLI)
+RUN curl -LO "https://github.com/derailed/k9s/releases/download/v0.32.4/k9s_Linux_amd64.tar.gz" && \
+    tar -xzf k9s_Linux_amd64.tar.gz && \
+    mv k9s /usr/local/bin/ && \
+    rm k9s_Linux_amd64.tar.gz
+
 # Create directory for binary tools
 RUN mkdir -p /workspaces/home-cluster/.bin
 
