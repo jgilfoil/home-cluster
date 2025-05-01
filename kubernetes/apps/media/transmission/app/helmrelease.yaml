@@ -41,8 +41,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/transmission
-              tag: "4.0.5"
+              repository: ghcr.io/home-operations/transmission
+              tag: "4.0.6"
             env:
               TZ: "America/Denver"
               TRANSMISSION__BLOCKLIST_URL: "https://mirror.codebucket.de/transmission/blocklist.p2p.gz"

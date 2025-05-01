@@ -41,8 +41,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/radarr
-              tag: 5.19.3
+              repository: ghcr.io/home-operations/radarr
+              tag: 5.23.0.9907
             env:
               TZ: "America/Denver"
               RADARR__INSTANCE_NAME: Radarr
