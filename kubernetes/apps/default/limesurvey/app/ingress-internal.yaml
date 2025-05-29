@@ -2,16 +2,19 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: limesurvey-internal
-  namespace: default # Matches the namespace of the HelmRelease
+  namespace: default
+  labels:
+    app.kubernetes.io/name: limesurvey # Added for consistency
   annotations:
-    kubernetes.io/ingress.class: internal # Or your specific internal ingress class name
+    # kubernetes.io/ingress.class: internal # Replaced by spec.ingressClassName
     gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Utilities # Or another suitable group from your homepage config
+    gethomepage.dev/group: Utilities
     gethomepage.dev/name: LimeSurvey
-    gethomepage.dev/icon: limesurvey.png # You might need to find/host a suitable icon
+    gethomepage.dev/icon: limesurvey.png
     gethomepage.dev/description: "Survey Application"
     # Add any other necessary annotations for your internal ingress controller
 spec:
+  ingressClassName: internal # Preferred way to specify ingress class
   rules:
     - host: survey.${SECRET_DOMAIN}
       http:
@@ -23,6 +26,3 @@ spec:
                 name: limesurvey
                 port:
                   number: 80
-  tls:
-    - hosts:
-        - survey.${SECRET_DOMAIN}
