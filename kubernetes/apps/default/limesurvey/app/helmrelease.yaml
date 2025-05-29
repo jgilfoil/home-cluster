@@ -35,6 +35,7 @@ spec:
         existingSecretAdminPasswordKey: LIMESURVEY_ADMIN_PASSWORD
         email: admin@${SECRET_DOMAIN}
       publicUrl: https://survey.${SECRET_DOMAIN}/
+      listenPort: 8080 # Explicitly set, though it's the default
     # Configure persistence to use the PVC we defined
     persistence:
       enabled: true
@@ -55,49 +56,24 @@ spec:
           enabled: true
           existingClaim: "limesurvey-mariadb-pvc"
     service:
-      main:
-        ports:
-          http:
-            port: 8080 # Default LimeSurvey port in the chart
+      # type: ClusterIP # This is the default
+      port: 80 # Service will listen on port 80, chart should target pod port 8080
     ingress:
-      main:
-        enabled: true
-        className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
-          cert-manager.io/cluster-issuer: letsencrypt-production # Uncomment if using cert-manager
-        hosts:
-          - host: &host survey.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service: # The chart creates a service named <release_name>-limesurvey by default
-                  name: *app # This will be 'limesurvey'
-                  port:
-                    number: 8080
-        tls:
-          - hosts:
-              - *host
-            secretName: survey-${SECRET_DOMAIN}-tls # Optional: if cert-manager is creating the cert
-      internal: # For homepage integration
-        enabled: true
-        className: internal
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Utilities # Or another suitable group
-          gethomepage.dev/name: LimeSurvey
-          gethomepage.dev/icon: limesurvey.png # You might need to find a suitable icon URL or place one
-          gethomepage.dev/description: "Survey Application"
-          # external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}" # If needed for internal resolution
-        hosts:
-          - host: *host # Re-use the same host for internal access via homepage
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  name: *app
-                  port:
-                    number: 8080
+      enabled: true
+      className: external
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        # cert-manager.io/cluster-issuer: letsencrypt-production # Uncomment if using cert-manager
+      hosts:
+        - host: "survey.${SECRET_DOMAIN}"
+          paths:
+            - path: /
+              pathType: Prefix # Using Prefix as it's generally more common and clear
+              # backend serviceName and servicePort are handled by the chart's ingress template
+      tls:
+        - hosts:
+            - "survey.${SECRET_DOMAIN}"
+          # secretName: was removed by user, so it stays absent
     # resources: # Adjust as needed
     #   requests:
     #     cpu: 200m
