@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: limesurvey-uploads-pvc
+  labels:
+    app.kubernetes.io/name: limesurvey
+spec:
+  accessModes: ["ReadWriteOnce"] 
+    requests:
+      storage: 500Mi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: limesurvey-mariadb-pvc
+  labels:
+    app.kubernetes.io/name: limesurvey
+    app.kubernetes.io/component: mariadb
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 1Gi # Adjust as needed for the database
+  storageClassName: ceph-block

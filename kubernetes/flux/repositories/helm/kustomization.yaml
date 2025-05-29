@@ -28,3 +28,4 @@ resources:
   - ./xenitab.yaml
   - ./cloudnative-pg.yaml
   - ./open-webui.yaml
+  - ./limesurvey.yaml
