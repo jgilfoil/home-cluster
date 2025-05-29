@@ -44,12 +44,10 @@ spec:
     mariadb:
       enabled: true
       auth:
-        # rootPassword: ${LIMESURVEY_DB_ROOT_PASSWORD} # Sourced from secret.sops.yaml
-        # password: ${LIMESURVEY_DB_PASSWORD} # Sourced from secret.sops.yaml
         # Use existingSecret to load DB passwords
+        # The secret keys should now match the Bitnami MariaDB chart defaults:
+        # mariadb-root-password, mariadb-password
         existingSecret: limesurvey-secret # Name of the k8s secret
-        existingSecretRootPasswordKey: LIMESURVEY_DB_ROOT_PASSWORD
-        existingSecretPasswordKey: LIMESURVEY_DB_PASSWORD
         database: limesurvey
         username: limesurvey
       primary:
