@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./pvcs.yaml
-  - ./secret.sops.yaml 
+  - ./secret.sops.yaml
+  - ./ingress-internal.yaml 
