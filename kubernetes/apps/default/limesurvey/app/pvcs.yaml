@@ -4,11 +4,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: limesurvey-uploads-pvc
   labels:
-    app.kubernetes.io/name: limesurvey
+    app.kubernetes.io/name: "limesurvey"
 spec:
   accessModes: ["ReadWriteOnce"] 
+  resources:
     requests:
       storage: 500Mi
+  storageClassName: ceph-block
 
 ---
 apiVersion: v1
