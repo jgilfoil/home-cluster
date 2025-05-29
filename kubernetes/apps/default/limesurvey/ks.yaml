@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app limesurvey # Using YAML anchor for app name
+  namespace: flux-system
+  # labels:
+    # substitution.flux.home.arpa/enabled: "true" # This label might be inherited or applied by a parent Flux Kustomization
+spec:
+  targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app # Referencing the YAML anchor
+  path: ./kubernetes/apps/default/limesurvey/app # Path to the Kustomize build directory for LimeSurvey components
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes # Assuming this is your main GitRepository CRD for Flux
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m 
