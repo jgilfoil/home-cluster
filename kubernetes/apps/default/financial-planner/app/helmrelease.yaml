@@ -52,6 +52,8 @@ spec:
             runAsGroup: 10001
             runAsNonRoot: true
             fsGroup: 10001
+          imagePullSecrets:
+            - name: ghcr-login-secret
     service:
       app:
         controller: *app
