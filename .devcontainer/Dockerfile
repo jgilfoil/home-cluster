@@ -42,6 +42,15 @@ RUN curl -LO "https://github.com/derailed/k9s/releases/download/v0.32.4/k9s_Linu
     mv k9s /usr/local/bin/ && \
     rm k9s_Linux_amd64.tar.gz
 
+# Install Flux CLI (version 2.4.0)
+RUN curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=2.4.0 bash
+
+# Install SOPS (Secrets OPerationS)
+# Get the latest version from https://github.com/getsops/sops/releases
+# As of last check, v3.10.2 was the latest.
+RUN curl -L "https://github.com/getsops/sops/releases/download/v3.10.2/sops-v3.10.2.linux.amd64" -o /usr/local/bin/sops && \
+    chmod +x /usr/local/bin/sops
+
 # Create directory for binary tools
 RUN mkdir -p /workspaces/home-cluster/.bin
 
