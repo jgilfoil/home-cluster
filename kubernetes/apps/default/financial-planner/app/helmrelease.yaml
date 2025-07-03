@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/jgilfoil/pfp
-              tag: v0.1.1
+              tag: v0.1.2
               pullPolicy: Always
             resources:
               requests:
