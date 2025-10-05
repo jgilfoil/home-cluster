@@ -1,0 +1,65 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app discord-bot
+  labels:
+    app: *app
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    metadata:
+      labels:
+        app: *app
+    spec:
+      containers:
+      - name: *app
+        image: jgilfoil/mymindinai-discordbot:latest
+        env:
+        - name: DISCORD_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: DISCORD_BOT_TOKEN
+        - name: MIDJOURNEY_BOT_ID
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: MIDJOURNEY_BOT_ID
+        - name: AWS_S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_S3_BUCKET_NAME
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_SECRET_ACCESS_KEY
+        - name: AWS_SQS_QUEUE_URL
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: AWS_SQS_QUEUE_URL
+        - name: DISCORD_DL_CHANNEL_ID
+          valueFrom:
+            secretKeyRef:
+              name: discordbot-secrets
+              key: DISCORD_DL_CHANNEL_ID
+        volumeMounts:
+          - mountPath: /app/images
+            name: images
+      volumes:
+      - name: images
+        persistentVolumeClaim:
+          claimName: mymindinai-images-nfs
