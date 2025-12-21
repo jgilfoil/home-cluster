@@ -31,8 +31,9 @@ spec:
       name: "*"
   exclusionList:
     # Temporary mute: vpn-gateway is currently failing health checks; don't spam Discord.
-    - "kustomization/vpn-gateway\\.flux-system"
-    - "helmrelease/vpn-gateway\\.network"
+    # Note: exclusionList matches against the event message; match the strings that actually appear there.
+    - "(?i)kustomization/vpn-gateway"
+    - "(?i)helmrelease/network/vpn-gateway"
     - "error.*lookup github\\.com"
     - "waiting.*socket"
   suspend: false
