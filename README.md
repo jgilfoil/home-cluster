@@ -16,6 +16,10 @@ This is iteration ~2.0 of my home cluster. You can see my previous iteration, ar
 
 Inspired and based on [onedr0p's cluster template](https://github.com/onedr0p/cluster-template).
 
+## Documentation
+
+- [Docs index](./docs/README.md)
+
 ## Applications
 All of the below infrastructure and suporting services combine to provide a platform to run these services in a seamless manner. More to come soon.
 - **Plex:** Media server to organize and stream multimedia collections accessible from various devices.
