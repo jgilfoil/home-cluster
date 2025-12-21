@@ -30,6 +30,9 @@ spec:
     - kind: HelmRelease
       name: "*"
   exclusionList:
+    # Temporary mute: vpn-gateway is currently failing health checks; don't spam Discord.
+    - "kustomization/vpn-gateway\\.flux-system"
+    - "helmrelease/vpn-gateway\\.network"
     - "error.*lookup github\\.com"
     - "waiting.*socket"
   suspend: false
