@@ -1,0 +1,51 @@
+---
+description: Repo context for home-cluster GitOps
+alwaysApply: true
+---
+# Home-Cluster Repo Context
+
+This repository manages a home Kubernetes cluster using GitOps. The cluster runs
+on k3s, with Flux and Renovate handling deployments and updates. Most workload
+and platform configuration lives under `kubernetes/` as YAML manifests
+(including HelmRelease resources). Automation and provisioning live under
+`ansible/` and `bootstrap/` (templates and scripts).
+
+Key areas:
+- `kubernetes/`: cluster apps, infrastructure, and config.
+- `bootstrap/`: Jinja templates and scripts used to generate manifests.
+- `ansible/`: playbooks and inventory for cluster operations.
+- `tests/`: validation and smoke-test manifests.
+- `docs/`: operational and architecture notes.
+
+## Kubernetes Structure
+
+The `kubernetes/` directory follows a strict GitOps structure using Flux v2:
+
+### `kubernetes/apps/`
+Contains workloads organized by namespace.
+- Pattern: `kubernetes/apps/<namespace>/<app>/`
+- Structure per app:
+  - `ks.yaml`: Flux Kustomization defining how to reconcile the app.
+    - Specifies `targetNamespace` and `path` to the `app/` subfolder.
+    - Handles SOPS decryption and variable substitution.
+  - `app/`: Contains the actual Kubernetes manifests.
+    - `helmrelease.yaml`: The HelmRelease definition.
+    - `kustomization.yaml`: Kustomize file for the app artifacts.
+    - `secret.sops.yaml`: Encrypted secrets (if applicable).
+    - `configmap.yaml`, `ingress.yaml`: Other resources.
+
+### `kubernetes/flux/`
+Core Flux configuration and cluster-wide settings.
+- `apps.yaml`: Root Kustomization that includes `kubernetes/apps`.
+- `vars/`: Global `cluster-settings` and `cluster-secrets`.
+- `repositories/`: Git and Helm repository definitions.
+
+### `kubernetes/templates/`
+Reusable components (e.g., VolSync templates) used across multiple apps.
+
+When making changes:
+- Prefer declarative YAML edits in `kubernetes/` over ad-hoc scripts.
+- Keep changes consistent with Flux/HelmRelease conventions already used.
+- If adjusting cluster defaults or templates, update both templates and any
+  generated manifests if applicable.
+- Secrets must be encrypted with SOPS before committing.
