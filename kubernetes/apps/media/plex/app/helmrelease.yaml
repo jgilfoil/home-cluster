@@ -41,7 +41,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/plex
-              tag: 1.41.6
+              tag: 1.43.0.10492
             env:
               TZ: America/Denver
             probes:
