@@ -105,7 +105,6 @@
       "matchPackagePatterns": [
         "kube-prometheus-stack",
         "grafana",
-        "kubernetes-dashboard",
         "metrics-server"
       ]
     },
