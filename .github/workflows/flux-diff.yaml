@@ -35,10 +35,12 @@ jobs:
           path: default
 
       - name: Diff Resources
-        uses: docker://ghcr.io/allenporter/flux-local:main
-        with:
-          args: >-
-            diff ${{ matrix.resources }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          args=(
+            diff "${{ matrix.resources }}"
             --unified 6
             --path /github/workspace/pull/${{ matrix.paths }}/flux
             --path-orig /github/workspace/default/${{ matrix.paths }}/flux
@@ -47,10 +49,50 @@ jobs:
             --all-namespaces
             --sources "home-kubernetes"
             --output-file diff.patch
+          )
+
+          # Run flux-local in a container but keep control of exit handling so we can provide
+          # actionable output in diff.patch (and avoid blocking PRs on upstream-pruned chart versions).
+          set +e
+          docker run --rm \
+            --workdir /github/workspace \
+            -v "${GITHUB_WORKSPACE}:/github/workspace" \
+            ghcr.io/allenporter/flux-local:main \
+            "${args[@]}" 2>&1 | tee flux-local.log
+          status=${PIPESTATUS[0]}
+          set -e
+
+          # If diff generation failed, decide whether to fail the workflow.
+          # Known non-actionable failure: upstream Helm repos pruning old chart versions referenced
+          # by the default branch, which prevents generating a before/after diff.
+          if [[ "${status}" -ne 0 ]]; then
+            if grep -Eqi "no chart version found|chart .* matching .* not found|failed to get chart version" flux-local.log; then
+              cat > diff.patch <<'EOF'
+          Flux Diff could not be generated because the base branch references a Helm chart version
+          that is no longer available in its upstream repository (chart pruning).
+
+          Action:
+          - Merge the chart version bump first, then re-run Flux Diff (subsequent diffs will work again),
+            or update the base branch to a currently-published chart version.
+
+          Details (tail of flux-local output):
+          EOF
+              echo "" >> diff.patch
+              tail -n 200 flux-local.log >> diff.patch
+            else
+              echo "flux-local diff failed for an unexpected reason (see logs above)." >&2
+              exit "${status}"
+            fi
+          fi
 
       - name: Generate Diff
         id: diff
         run: |
+          # diff.patch is created by the previous step. If it is missing for any reason,
+          # create a placeholder to avoid the job failing without useful output.
+          if [ ! -f diff.patch ]; then
+            echo "diff.patch was not generated; see workflow logs." > diff.patch
+          fi
           cat diff.patch
           echo "diff<<EOF" >> $GITHUB_OUTPUT
           cat diff.patch >> $GITHUB_OUTPUT
