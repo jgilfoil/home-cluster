@@ -18,4 +18,6 @@ spec:
   wait: true
   interval: 30m
   retryInterval: 5m30s
-  timeout: 5m
+  # HelmRelease can legitimately stay InProgress >5m during chart fetch / upgrades;
+  # align this with typical Helm/Source timeouts to avoid false-negative health timeouts.
+  timeout: 15m
