@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iperf-server
+  labels:
+    app: iperf-server
+spec:
+  containers:
+  - name: iperf
+    image: cagedata/iperf3
+    command: ["iperf3", "-s"]
+    ports:
+    - containerPort: 5201
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperf-lb
+spec:
+  type: NodePort
+  selector:
+    app: iperf-server
+  ports:
+    - port: 5201
+      targetPort: 5201
+      protocol: TCP
+      nodePort: 32002
