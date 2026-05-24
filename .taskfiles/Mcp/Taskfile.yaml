@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  MCP_DIR: "{{.ROOT_DIR}}/tools/home-cluster-mcp"
+  MCP_CONFIG_FILE: "{{.MCP_DIR}}/config.sample.yaml"
+  MCP_PRIVATE_DIR: "{{.PRIVATE_DIR}}/codex-mcp"
+  MCP_KUBECONFIG_FILE: "{{.MCP_PRIVATE_DIR}}/kubeconfig"
+
+tasks:
+
+  install:
+    desc: Install the home-cluster MCP package and test extras
+    cmd: '{{.PYTHON_BIN}} -m pip install --upgrade --editable "{{.MCP_DIR}}[test]"'
+    preconditions:
+      - { msg: "Missing MCP package", sh: "test -f {{.MCP_DIR}}/pyproject.toml" }
+
+  kubeconfig:
+    desc: Create a short-lived kubeconfig for the Codex MCP service account
+    cmds:
+      - mkdir -p "{{.MCP_PRIVATE_DIR}}"
+      - |
+        set -eu
+        TOKEN="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" -n default create token codex-mcp --duration=8h)"
+        SERVER="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" config view --raw --minify -o jsonpath='{.clusters[0].cluster.server}')"
+        CA_DATA="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" config view --raw --minify -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')"
+        if [ -z "$CA_DATA" ]; then
+          echo "Current kubeconfig does not expose certificate-authority-data with --raw --minify" >&2
+          exit 1
+        fi
+        umask 077
+        cat > "{{.MCP_KUBECONFIG_FILE}}" <<EOF
+        apiVersion: v1
+        kind: Config
+        clusters:
+        - name: home-cluster
+          cluster:
+            server: ${SERVER}
+            certificate-authority-data: ${CA_DATA}
+        users:
+        - name: codex-mcp
+          user:
+            token: ${TOKEN}
+        contexts:
+        - name: codex-mcp@home-cluster
+          context:
+            cluster: home-cluster
+            user: codex-mcp
+            namespace: default
+        current-context: codex-mcp@home-cluster
+        EOF
+        chmod 600 "{{.MCP_KUBECONFIG_FILE}}"
+        echo "Wrote {{.MCP_KUBECONFIG_FILE}}"
+    preconditions:
+      - { msg: "Missing kubectl", sh: "command -v kubectl" }
+      - { msg: "Missing kubeconfig", sh: "test -f {{.KUBECONFIG_FILE}}" }
+
+  run:
+    desc: Run the home-cluster MCP stdio server locally
+    dir: "{{.MCP_DIR}}"
+    env:
+      HOME_CLUSTER_MCP_CONFIG: "{{.MCP_CONFIG_FILE}}"
+      PYTHONPATH: "{{.MCP_DIR}}/src"
+    cmd: '{{.PYTHON_BIN}} -m home_cluster_mcp --config "{{.MCP_CONFIG_FILE}}"'
+    preconditions:
+      - { msg: "Missing MCP config", sh: "test -f {{.MCP_CONFIG_FILE}}" }
+
+  test:
+    desc: Run home-cluster MCP unit tests
+    dir: "{{.ROOT_DIR}}"
+    env:
+      PYTHONPATH: "{{.MCP_DIR}}/src"
+    cmd: '{{.PYTHON_BIN}} -m pytest "{{.MCP_DIR}}/tests"'
+    preconditions:
+      - { msg: "Missing pytest", sh: "{{.PYTHON_BIN}} -m pytest --version" }

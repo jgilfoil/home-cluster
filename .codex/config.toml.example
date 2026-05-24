@@ -1,0 +1,29 @@
+[mcp_servers.home-cluster]
+command = "python3"
+args = [
+  "-m",
+  "home_cluster_mcp",
+  "--config",
+  "/home/jason/repos/home-cluster/tools/home-cluster-mcp/config.sample.yaml",
+]
+cwd = "/home/jason/repos/home-cluster/tools/home-cluster-mcp"
+env = { PYTHONPATH = "/home/jason/repos/home-cluster/tools/home-cluster-mcp/src" }
+enabled = true
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+default_tools_approval_mode = "auto"
+enabled_tools = [
+  "cluster_overview",
+  "flux_status",
+  "recent_events",
+  "workload_status",
+  "pod_summary",
+  "pod_logs",
+  "resource_git_hint",
+  "prometheus_query",
+  "pod_exec_plan",
+  "pod_exec",
+]
+
+[mcp_servers.home-cluster.tools.pod_exec]
+approval_mode = "approve"

@@ -29,6 +29,7 @@ includes:
   kubernetes:
     aliases: ["k8s"]
     taskfile: .taskfiles/Kubernetes/Taskfile.yaml
+  mcp: .taskfiles/Mcp/Taskfile.yaml
   flux: .taskfiles/Flux/Taskfile.yaml
   repository:
     aliases: ["repo"]
