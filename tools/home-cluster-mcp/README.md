@@ -7,7 +7,7 @@ queries, and tightly constrained non-interactive pod exec for app namespaces.
 ## Install
 
 ```bash
-python3 -m pip install -e "tools/home-cluster-mcp[test]"
+task mcp:install
 ```
 
 ## Configure
@@ -26,6 +26,12 @@ python3 -m pip install -e "tools/home-cluster-mcp[test]"
 
 ```bash
 task mcp:run
+```
+
+Codex should point at the repo venv entrypoint:
+
+```toml
+command = "/home/jason/repos/home-cluster/.venv/bin/home-cluster-mcp"
 ```
 
 The server uses stdio for MCP protocol traffic. Audit details for `pod_exec`

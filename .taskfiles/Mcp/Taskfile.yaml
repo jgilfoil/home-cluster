@@ -7,12 +7,16 @@ vars:
   MCP_CONFIG_FILE: "{{.MCP_DIR}}/config.sample.yaml"
   MCP_PRIVATE_DIR: "{{.PRIVATE_DIR}}/codex-mcp"
   MCP_KUBECONFIG_FILE: "{{.MCP_PRIVATE_DIR}}/kubeconfig"
+  MCP_PYTHON_BIN: "{{.VIRTUAL_ENV}}/bin/python"
+  MCP_SERVER_BIN: "{{.VIRTUAL_ENV}}/bin/home-cluster-mcp"
 
 tasks:
 
   install:
     desc: Install the home-cluster MCP package and test extras
-    cmd: '{{.PYTHON_BIN}} -m pip install --upgrade --editable "{{.MCP_DIR}}[test]"'
+    cmds:
+      - task: :workstation:venv
+      - '"{{.MCP_PYTHON_BIN}}" -m pip install --upgrade --editable "{{.MCP_DIR}}[test]"'
     preconditions:
       - { msg: "Missing MCP package", sh: "test -f {{.MCP_DIR}}/pyproject.toml" }
 
@@ -58,19 +62,18 @@ tasks:
 
   run:
     desc: Run the home-cluster MCP stdio server locally
-    dir: "{{.MCP_DIR}}"
+    dir: "{{.ROOT_DIR}}"
     env:
       HOME_CLUSTER_MCP_CONFIG: "{{.MCP_CONFIG_FILE}}"
-      PYTHONPATH: "{{.MCP_DIR}}/src"
-    cmd: '{{.PYTHON_BIN}} -m home_cluster_mcp --config "{{.MCP_CONFIG_FILE}}"'
+    cmd: '"{{.MCP_SERVER_BIN}}" --config "{{.MCP_CONFIG_FILE}}"'
     preconditions:
       - { msg: "Missing MCP config", sh: "test -f {{.MCP_CONFIG_FILE}}" }
+      - { msg: "Missing MCP server; run task mcp:install", sh: "test -x {{.MCP_SERVER_BIN}}" }
 
   test:
     desc: Run home-cluster MCP unit tests
     dir: "{{.ROOT_DIR}}"
-    env:
-      PYTHONPATH: "{{.MCP_DIR}}/src"
-    cmd: '{{.PYTHON_BIN}} -m pytest "{{.MCP_DIR}}/tests"'
+    cmd: '"{{.MCP_PYTHON_BIN}}" -m pytest "{{.MCP_DIR}}/tests"'
     preconditions:
-      - { msg: "Missing pytest", sh: "{{.PYTHON_BIN}} -m pytest --version" }
+      - { msg: "Missing MCP package", sh: "test -f {{.MCP_DIR}}/pyproject.toml" }
+      - { msg: "Missing MCP test environment; run task mcp:install", sh: "test -x {{.MCP_PYTHON_BIN}}" }
