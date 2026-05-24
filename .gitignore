@@ -13,6 +13,9 @@ kubeconfig
 .bin
 # Ansible
 .venv*
+# Python
+__pycache__/
+.pytest_cache/
 # Taskfile
 .task
 # Brew

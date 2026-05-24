@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./homepage/ks.yaml
   - ./discord-template-notifier/ks.yaml
+  - ./codex-mcp-access/ks.yaml
   - ./pictshare/ks.yaml
   - ./open-webui/ks.yaml
   - ./limesurvey/ks.yaml
