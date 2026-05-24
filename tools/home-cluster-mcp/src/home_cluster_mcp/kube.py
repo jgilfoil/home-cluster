@@ -38,8 +38,7 @@ class KubernetesClient:
         from kubernetes import client, config
         from kubernetes.stream import stream as kubernetes_stream
 
-        config.load_kube_config(config_file=str(settings.kubeconfig))
-        self.api_client = client.ApiClient()
+        self.api_client = _api_client_from_kubeconfig(client, config, settings.kubeconfig)
         self.core = client.CoreV1Api(self.api_client)
         self.apps = client.AppsV1Api(self.api_client)
         self.batch = client.BatchV1Api(self.api_client)
@@ -304,6 +303,19 @@ def summarize_pod(pod: Any) -> dict[str, Any]:
             for ref in getattr(metadata, "owner_references", None) or []
         ],
     }
+
+
+def _api_client_from_kubeconfig(client_module: Any, config_module: Any, kubeconfig: Any) -> Any:
+    config_module.load_kube_config(config_file=str(kubeconfig))
+    configuration = client_module.Configuration.get_default_copy()
+
+    # kubernetes>=36 loads token kubeconfigs into `authorization`, while the
+    # generated API methods ask for auth settings named `BearerToken`.
+    authorization = configuration.api_key.get("authorization")
+    if authorization and "BearerToken" not in configuration.api_key:
+        configuration.api_key["BearerToken"] = authorization
+
+    return client_module.ApiClient(configuration)
 
 
 def _items(value: Any) -> list[Any]:

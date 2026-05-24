@@ -2,7 +2,7 @@ from pathlib import Path
 from types import SimpleNamespace as NS
 
 from home_cluster_mcp.config import ExecSettings, Limits, PrometheusSettings, Settings
-from home_cluster_mcp.kube import KubernetesClient, summarize_pod
+from home_cluster_mcp.kube import KubernetesClient, _api_client_from_kubeconfig, summarize_pod
 
 
 def test_summarize_pod_omits_literal_env_values() -> None:
@@ -74,3 +74,36 @@ def test_pod_exec_denied_before_streaming() -> None:
 
     assert result["executed"] is False
     assert result["decision"]["risk"] == "denied"
+
+
+def test_api_client_maps_authorization_to_bearer_token() -> None:
+    class FakeConfiguration:
+        def __init__(self) -> None:
+            self.api_key = {"authorization": "Bearer token"}
+
+        @classmethod
+        def get_default_copy(cls) -> "FakeConfiguration":
+            return cls()
+
+    class FakeClientModule:
+        Configuration = FakeConfiguration
+
+        class ApiClient:
+            def __init__(self, configuration: FakeConfiguration) -> None:
+                self.configuration = configuration
+
+    class FakeConfigModule:
+        loaded_config_file = None
+
+        @classmethod
+        def load_kube_config(cls, config_file: str) -> None:
+            cls.loaded_config_file = config_file
+
+    api_client = _api_client_from_kubeconfig(
+        FakeClientModule,
+        FakeConfigModule,
+        "/tmp/kubeconfig",
+    )
+
+    assert FakeConfigModule.loaded_config_file == "/tmp/kubeconfig"
+    assert api_client.configuration.api_key["BearerToken"] == "Bearer token"
