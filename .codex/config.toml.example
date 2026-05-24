@@ -1,13 +1,10 @@
 [mcp_servers.home-cluster]
-command = "python3"
+command = "/home/jason/repos/home-cluster/.venv/bin/home-cluster-mcp"
 args = [
-  "-m",
-  "home_cluster_mcp",
   "--config",
   "/home/jason/repos/home-cluster/tools/home-cluster-mcp/config.sample.yaml",
 ]
-cwd = "/home/jason/repos/home-cluster/tools/home-cluster-mcp"
-env = { PYTHONPATH = "/home/jason/repos/home-cluster/tools/home-cluster-mcp/src" }
+cwd = "/home/jason/repos/home-cluster"
 enabled = true
 startup_timeout_sec = 10
 tool_timeout_sec = 60
