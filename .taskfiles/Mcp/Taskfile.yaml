@@ -33,8 +33,9 @@ tasks:
           echo "Current kubeconfig does not expose certificate-authority-data with --raw --minify" >&2
           exit 1
         fi
-        umask 077
-        cat > "{{.MCP_KUBECONFIG_FILE}}" <<EOF
+        TMP_FILE="$(mktemp "{{.MCP_PRIVATE_DIR}}/.kubeconfig.XXXXXX")"
+        trap 'rm -f "$TMP_FILE"' EXIT
+        cat > "$TMP_FILE" <<EOF
         apiVersion: v1
         kind: Config
         clusters:
@@ -54,7 +55,10 @@ tasks:
             namespace: default
         current-context: codex-mcp@home-cluster
         EOF
-        chmod 600 "{{.MCP_KUBECONFIG_FILE}}"
+        chmod 600 "$TMP_FILE"
+        install -m 600 "$TMP_FILE" "{{.MCP_KUBECONFIG_FILE}}"
+        rm -f "$TMP_FILE"
+        trap - EXIT
         echo "Wrote {{.MCP_KUBECONFIG_FILE}}"
     preconditions:
       - { msg: "Missing kubectl", sh: "command -v kubectl" }
