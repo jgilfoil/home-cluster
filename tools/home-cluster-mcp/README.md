@@ -13,11 +13,27 @@ task mcp:install
 ## Configure
 
 1. Apply the GitOps RBAC in `kubernetes/apps/default/codex-mcp-access`.
-2. Mint a short-lived kubeconfig:
+2. Mint a kubeconfig.
+
+   Short-lived token request, useful for one-off troubleshooting:
 
    ```bash
    task mcp:kubeconfig
    ```
+
+   Durable service-account token Secret, useful for a persistent agent VM without
+   keeping an admin kubeconfig available after bootstrap:
+
+   ```bash
+   task mcp:kubeconfig-durable
+   ```
+
+   The durable task requires a bootstrap kubeconfig that can read the
+   `codex-mcp-token` Secret after Flux has reconciled it. It reads that
+   ServiceAccount token Secret once, writes the local kubeconfig to
+   `.private/codex-mcp/kubeconfig` with `0600` permissions, and does not commit
+   the generated token. After the local kubeconfig is written and tested, the
+   bootstrap/admin kubeconfig can be removed from the agent VM.
 
 3. Copy `.codex/config.toml.example` into your Codex config and adjust absolute
    paths if needed.
