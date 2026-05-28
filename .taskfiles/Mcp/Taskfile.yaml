@@ -9,6 +9,8 @@ vars:
   MCP_KUBECONFIG_FILE: "{{.MCP_PRIVATE_DIR}}/kubeconfig"
   MCP_PYTHON_BIN: "{{.VIRTUAL_ENV}}/bin/python"
   MCP_SERVER_BIN: "{{.VIRTUAL_ENV}}/bin/home-cluster-mcp"
+  MCP_TOKEN_DURATION: 8h
+  MCP_TOKEN_SECRET_NAME: codex-mcp-token
 
 tasks:
 
@@ -26,7 +28,7 @@ tasks:
       - mkdir -p "{{.MCP_PRIVATE_DIR}}"
       - |
         set -eu
-        TOKEN="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" -n default create token codex-mcp --duration=8h)"
+        TOKEN="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" -n default create token codex-mcp --duration={{.MCP_TOKEN_DURATION}})"
         SERVER="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" config view --raw --minify -o jsonpath='{.clusters[0].cluster.server}')"
         CA_DATA="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" config view --raw --minify -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')"
         if [ -z "$CA_DATA" ]; then
@@ -60,6 +62,51 @@ tasks:
         rm -f "$TMP_FILE"
         trap - EXIT
         echo "Wrote {{.MCP_KUBECONFIG_FILE}}"
+    preconditions:
+      - { msg: "Missing kubectl", sh: "command -v kubectl" }
+      - { msg: "Missing kubeconfig", sh: "test -f {{.KUBECONFIG_FILE}}" }
+
+  kubeconfig-durable:
+    desc: Create a durable kubeconfig from the Codex MCP service-account token Secret
+    cmds:
+      - mkdir -p "{{.MCP_PRIVATE_DIR}}"
+      - |
+        set -eu
+        TOKEN_DATA="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" -n default get secret "{{.MCP_TOKEN_SECRET_NAME}}" -o jsonpath='{.data.token}')"
+        CA_DATA="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" -n default get secret "{{.MCP_TOKEN_SECRET_NAME}}" -o jsonpath='{.data.ca\.crt}')"
+        SERVER="$(kubectl --kubeconfig "{{.KUBECONFIG_FILE}}" config view --raw --minify -o jsonpath='{.clusters[0].cluster.server}')"
+        if [ -z "$TOKEN_DATA" ] || [ -z "$CA_DATA" ]; then
+          echo "Service-account token Secret {{.MCP_TOKEN_SECRET_NAME}} is not populated yet" >&2
+          exit 1
+        fi
+        TOKEN="$(printf '%s' "$TOKEN_DATA" | base64 --decode)"
+        TMP_FILE="$(mktemp "{{.MCP_PRIVATE_DIR}}/.kubeconfig.XXXXXX")"
+        trap 'rm -f "$TMP_FILE"' EXIT
+        cat > "$TMP_FILE" <<EOF
+        apiVersion: v1
+        kind: Config
+        clusters:
+        - name: home-cluster
+          cluster:
+            server: ${SERVER}
+            certificate-authority-data: ${CA_DATA}
+        users:
+        - name: codex-mcp
+          user:
+            token: ${TOKEN}
+        contexts:
+        - name: codex-mcp@home-cluster
+          context:
+            cluster: home-cluster
+            user: codex-mcp
+            namespace: default
+        current-context: codex-mcp@home-cluster
+        EOF
+        chmod 600 "$TMP_FILE"
+        install -m 600 "$TMP_FILE" "{{.MCP_KUBECONFIG_FILE}}"
+        rm -f "$TMP_FILE"
+        trap - EXIT
+        echo "Wrote durable {{.MCP_KUBECONFIG_FILE}}"
     preconditions:
       - { msg: "Missing kubectl", sh: "command -v kubectl" }
       - { msg: "Missing kubeconfig", sh: "test -f {{.KUBECONFIG_FILE}}" }
