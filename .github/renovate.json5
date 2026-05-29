@@ -229,6 +229,59 @@
       "versioning": "regex:^v(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?<compatibility>\\+k.s)\\.?(?<build>\\d+)$",
       "matchPackagePatterns": ["k3s"]
     },
+    // pre-cutover rebuild safety gates
+    {
+      "description": ["Pre-cutover: require review for Kubernetes and platform-sensitive updates"],
+      "matchPackagePatterns": [
+        "kubernetes",
+        "k3s",
+        "talos",
+        "sidero",
+        "flux",
+        "rook.ceph",
+        "volsync",
+        "openebs",
+        "snapshot-controller",
+        "cilium",
+        "ingress-nginx",
+        "external-dns",
+        "cloudflared",
+        "cert-manager",
+        "k8s-gateway",
+        "system-upgrade-controller",
+        "prometheus-operator",
+        "kube-prometheus-stack",
+        "metrics-server",
+        "grafana"
+      ],
+      "automerge": false,
+      "ignoreTests": false,
+      "addLabels": ["rebuild/review-required"]
+    },
+    {
+      "description": ["Pre-cutover: require review for storage, network, Flux, and node-management manifests"],
+      "matchFileNames": [
+        "ansible/**",
+        "bootstrap/**",
+        "kubernetes/flux/**",
+        "kubernetes/apps/kube-system/**",
+        "kubernetes/apps/network/**",
+        "kubernetes/apps/rook-ceph/**",
+        "kubernetes/apps/storage/**",
+        "kubernetes/apps/cert-manager/**",
+        "kubernetes/apps/observability/**"
+      ],
+      "automerge": false,
+      "ignoreTests": false,
+      "addLabels": ["rebuild/review-required"]
+    },
+    {
+      "description": ["Pre-cutover: require review for GitHub Actions and validation workflow updates"],
+      "matchManagers": ["github-actions"],
+      "automerge": false,
+      "ignoreTests": false,
+      "addLabels": ["rebuild/review-required"]
+    },
     // commit message topics
     {
       "matchDatasources": ["helm"],

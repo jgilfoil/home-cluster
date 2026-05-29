@@ -21,3 +21,4 @@
 - { name: "type/break",              color: "f6412d" }
 # Uncategorized
 - { name: "hold/upstream",           color: "ee0701" }
+- { name: "rebuild/review-required", color: "5319e7" }

@@ -85,6 +85,11 @@ lab architecture. A useful compromise is to restore Plex metadata into an
 alternate PVC, inspect it read-only, and validate that expected database and
 metadata files are present.
 
+The concrete manual runbook is
+[Plex VolSync Restore Drill](./plex-volsync-restore-drill.md). Its companion
+manifest is intentionally stored under `tests/manual/` so Flux will not apply it
+as part of normal reconciliation.
+
 ## Synology And Backup Endpoint Notes
 
 The VM may or may not need direct Synology NFS access.
