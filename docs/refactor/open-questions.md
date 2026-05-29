@@ -46,8 +46,12 @@ Current posture:
 
 ## Workloads
 
-1. Should `open-webui-pipelines` be backed up or treated as disposable?
-2. Should LimeSurvey get VolSync coverage before the rebuild?
+1. Should `open-webui-pipelines` be backed up or treated as disposable? It has
+   a live PVC and StatefulSet, but no Git-defined backup coverage has been
+   identified.
+2. Should LimeSurvey get VolSync coverage before the rebuild? It has separate
+   uploads and MariaDB PVCs, so the backup plan needs to account for both
+   filesystem uploads and database consistency.
 3. Should `financial-planner` be removed before the rebuild or after?
 4. Should CloudNativePG manifests be removed, archived, or kept as a future
    template?

@@ -30,6 +30,17 @@ Recommended during rebuild:
 - Use AI/Codex to review Renovate PRs, identify breaking changes, and generate
   follow-up patches.
 
+Current pre-cutover posture:
+
+- `.github/renovate.json5` intentionally disables automerge for Kubernetes,
+  k3s, Talos/Sidero, Flux, Rook-Ceph, VolSync, OpenEBS/storage, Cilium,
+  ingress, external-dns, cloudflared, cert-manager, GitHub Actions, and related
+  validation-sensitive infrastructure.
+- Renovate remains visible through PRs and the dependency dashboard; this is a
+  review gate, not a dependency freeze.
+- Revisit and selectively restore automerge after restore drills and cutover
+  acceptance gates are satisfied.
+
 Recommended after rebuild:
 
 - Restore selective automerge for low-risk patch/minor updates.

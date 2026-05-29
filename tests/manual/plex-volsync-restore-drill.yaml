@@ -1,0 +1,110 @@
+---
+# Manual-only Plex VolSync restore drill.
+#
+# This file is intentionally outside kubernetes/ so Flux will not reconcile it.
+# Apply it only by hand during a planned restore drill:
+#
+#   kubectl apply -f tests/manual/plex-volsync-restore-drill.yaml
+#
+# Guardrails:
+# - Do not change the live plex PVC.
+# - Do not create a ReplicationSource for this scratch PVC.
+# - Do not run restic prune, forget, unlock, or retention changes.
+# - Do not print Secret values or list sensitive media/library filenames.
+# - Delete only the drill-created resources named plex-restore-drill-20260529.
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: plex-restore-drill-20260529
+  namespace: media
+  labels:
+    app.kubernetes.io/name: plex
+    app.kubernetes.io/part-of: manual-restore-drill
+    home-cluster.jgilfoil.dev/manual-only: "true"
+  annotations:
+    home-cluster.jgilfoil.dev/purpose: "scratch Plex metadata restore verification"
+    home-cluster.jgilfoil.dev/guardrail: "restore to alternate PVC only; never replace live plex PVC"
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: plex-restic-secret
+    copyMethod: Snapshot
+    volumeSnapshotClassName: csi-ceph-blockpool
+    cacheStorageClassName: openebs-hostpath
+    cacheCapacity: 20Gi
+    storageClassName: ceph-block
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+    accessModes:
+      - ReadWriteOnce
+    capacity: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-restore-drill-20260529
+  namespace: media
+  labels:
+    app.kubernetes.io/name: plex
+    app.kubernetes.io/part-of: manual-restore-drill
+    home-cluster.jgilfoil.dev/manual-only: "true"
+  annotations:
+    home-cluster.jgilfoil.dev/purpose: "scratch PVC populated from plex-restore-drill-20260529"
+    home-cluster.jgilfoil.dev/guardrail: "not a live Plex claim; do not wire into HelmRelease"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  dataSourceRef:
+    kind: ReplicationDestination
+    apiGroup: volsync.backube
+    name: plex-restore-drill-20260529
+  resources:
+    requests:
+      storage: 100Gi
+  storageClassName: ceph-block
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: plex-restore-drill-20260529-inspect
+  namespace: media
+  labels:
+    app.kubernetes.io/name: plex
+    app.kubernetes.io/part-of: manual-restore-drill
+    home-cluster.jgilfoil.dev/manual-only: "true"
+  annotations:
+    home-cluster.jgilfoil.dev/purpose: "read-only inspection of restored Plex metadata"
+    home-cluster.jgilfoil.dev/guardrail: "inspection only; not Plex; no Service or Ingress"
+spec:
+  restartPolicy: Never
+  securityContext:
+    runAsUser: 568
+    runAsGroup: 568
+    runAsNonRoot: true
+    fsGroup: 568
+    fsGroupChangePolicy: OnRootMismatch
+  containers:
+    - name: inspect
+      image: docker.io/alpine:3.20
+      command:
+        - /bin/sh
+        - -c
+        - sleep 604800
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      volumeMounts:
+        - name: restored-plex
+          mountPath: /restore
+          readOnly: true
+  volumes:
+    - name: restored-plex
+      persistentVolumeClaim:
+        claimName: plex-restore-drill-20260529
+        readOnly: true
