@@ -127,7 +127,10 @@ rules:
   - apiGroups: [""]
     resources:
       - pods/exec
-    verbs: ["create"]
+    # Kubernetes Python client exec streams use the GET exec endpoint, while
+    # kubectl-style exec uses POST/create. Grant only the exec subresource in
+    # the approved namespaces so both clients work without broad pod mutation.
+    verbs: ["create", "get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -152,7 +155,10 @@ rules:
   - apiGroups: [""]
     resources:
       - pods/exec
-    verbs: ["create"]
+    # Kubernetes Python client exec streams use the GET exec endpoint, while
+    # kubectl-style exec uses POST/create. Grant only the exec subresource in
+    # the approved namespaces so both clients work without broad pod mutation.
+    verbs: ["create", "get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -177,7 +183,10 @@ rules:
   - apiGroups: [""]
     resources:
       - pods/exec
-    verbs: ["create"]
+    # Kubernetes Python client exec streams use the GET exec endpoint, while
+    # kubectl-style exec uses POST/create. Grant only the exec subresource in
+    # the approved namespaces so both clients work without broad pod mutation.
+    verbs: ["create", "get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -202,7 +211,10 @@ rules:
   - apiGroups: [""]
     resources:
       - pods/exec
-    verbs: ["create"]
+    # Kubernetes Python client exec streams use the GET exec endpoint, while
+    # kubectl-style exec uses POST/create. Grant only the exec subresource in
+    # the approved namespaces so both clients work without broad pod mutation.
+    verbs: ["create", "get"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
