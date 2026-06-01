@@ -65,7 +65,10 @@ Current owner posture:
 - A few hours of downtime is worth spending some planning and setup effort to
   achieve.
 - No spare hardware is currently available. Hyper-V VMs may be considered later
-  as a narrow Talos/restore test, not as a full homelab clone.
+  as a narrow Talos/restore test, not as a full homelab clone. When using
+  Hyper-V, place VM configuration under
+  `D:\Hyper-V\Virtual Machine Configurations\` and VHD/VHDX files under
+  `D:\Hyper-V\Virtual Hard Disks\`.
 
 ## Phase 1: Pre-Rebuild Hardening
 

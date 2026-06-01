@@ -21,6 +21,9 @@ Current posture:
 - A few days should be avoided if there is a practical lower-risk path.
 - No spare hardware exists today; full rehearsal should be optional, not a hard
   prerequisite.
+- If a Hyper-V Talos VM is built, use
+  `D:\Hyper-V\Virtual Machine Configurations\` for VM configuration and
+  `D:\Hyper-V\Virtual Hard Disks\` for VHD/VHDX files.
 
 ## Storage
 

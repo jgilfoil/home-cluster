@@ -13,8 +13,9 @@ discussion.
 2. [Project Roadmap](./project-roadmap.md)
 3. [Automation And AI](./automation-and-ai.md)
 4. [Talos And Restore Drills](./talos-and-restore-drills.md)
-5. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
-6. [Open Questions](./open-questions.md)
+5. [Talos VM Cluster Initialization](./talos-vm-cluster-initialization.md)
+6. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
+7. [Open Questions](./open-questions.md)
 
 ## Major Goals
 
@@ -40,7 +41,9 @@ discussion.
   downtime is desirable but not at unlimited cost or complexity.
 - Full rehearsal hardware is not currently available. A Hyper-V Talos VM may be
   useful as a narrow smoke/restore lab, but should not become a parallel GitOps
-  clone of the whole homelab.
+  clone of the whole homelab. If that VM is built, use the host's dedicated
+  Hyper-V paths: `D:\Hyper-V\Virtual Machine Configurations\` for VM config and
+  `D:\Hyper-V\Virtual Hard Disks\` for VHD/VHDX storage.
 
 ## Related Docs
 

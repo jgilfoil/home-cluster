@@ -26,6 +26,61 @@ the restore path and bootstrap sequence are well understood.
 A Hyper-V Talos VM can be useful as a focused spike, but it should not start as
 a full GitOps clone of the homelab.
 
+On the Hyper-V host, use the existing dedicated Hyper-V storage locations rather
+than defaulting to the user profile or `C:\ProgramData` paths:
+
+- VM configuration path: `D:\Hyper-V\Virtual Machine Configurations\`
+- VHD/VHDX path: `D:\Hyper-V\Virtual Hard Disks\`
+
+Any PowerShell runbook or generated commands should make those paths explicit,
+for example by passing `-Path "D:\Hyper-V\Virtual Machine Configurations"` to
+`New-VM` and writing the Talos OS disk under
+`D:\Hyper-V\Virtual Hard Disks\`.
+
+## Cluster Template North Star
+
+Use the current `onedr0p/cluster-template` as the north star for Talos-era
+decisions, but not as a mandate to run its full task list or adopt every default
+during the first rebuild.
+
+Template basics that matter for the VM/rebuild test:
+
+- Talos is the node OS baseline, with rendered Talos config treated as a
+  committed artifact/runbook input rather than hand-edited node state.
+- The Kubernetes API VIP, node IPs, and gateway/load-balancer IPs should be
+  explicit and non-overlapping inside the current LAN range.
+- Cilium should be the CNI, with Talos' built-in CNI and kube-proxy disabled for
+  the Talos target. Keep the current Cilium/L2 mental model unless a deliberate
+  BGP decision is made.
+- Flux, SOPS-age, Renovate, cert-manager, external-dns, cloudflared, and
+  k8s-gateway remain part of the desired operating model.
+- The template's Gateway API/Envoy path is useful strategic context, but the
+  first rebuild should not combine Talos/storage recovery with an ingress-nginx
+  to Gateway API migration unless testing proves that migration is necessary.
+- The template's current version pins are not automatically accepted. Choose the
+  Talos and Kubernetes versions deliberately after checking Cilium, Rook-Ceph,
+  VolSync, snapshot-controller, and hardware compatibility.
+- The template's storage guidance reinforces the existing project bias: if using
+  replicated storage, use dedicated disks and prove restore behavior before
+  trusting it. The VM can validate mechanics, not three-node Rook behavior.
+
+Decision points to preserve from the template when building the VM:
+
+1. Hyper-V VM configuration and VHD/VHDX paths. Use
+   `D:\Hyper-V\Virtual Machine Configurations\` and
+   `D:\Hyper-V\Virtual Hard Disks\` unless the host layout changes.
+2. VM node IP, API VIP, gateway/LB test IPs, DNS, and NTP values.
+3. Talos Image Factory schematic/extensions. Start minimal; add only extensions
+   needed for the VM test.
+4. Install disk identifier and primary NIC MAC address from Talos maintenance
+   mode, not guesses.
+5. Cilium load-balancer mode: use the current/simple L2 posture for testing;
+   only choose DSR/BGP if the LAN/router path is deliberately validated.
+6. GitOps scope: do not run a full template-style app bootstrap for the whole
+   homelab in the VM. Install only the bootstrap components needed to answer the
+   current risk question, then record what should become the real rebuild
+   runbook.
+
 Useful questions for a VM:
 
 - Can a single-node Talos cluster be brought up without excessive friction?
@@ -42,7 +97,9 @@ Questions a VM probably will not answer well:
 - Full production cutover timing.
 
 The VM should be disposable. The artifact worth keeping is the runbook and any
-repo changes needed for the future real cluster, not the VM state itself.
+repo changes needed for the future real cluster, not the VM state itself. The
+single-node initialization steps and first successful smoke-test result are
+recorded in [Talos VM Cluster Initialization](./talos-vm-cluster-initialization.md).
 
 ## GitOps Scope
 
