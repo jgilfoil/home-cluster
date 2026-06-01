@@ -93,6 +93,27 @@ K8sGPT Operator
   -> no auto-remediation
 ```
 
+## Current Agent Access Posture
+
+Current repo/agent work has moved from conceptual AI assistance to a bounded
+workstation pattern:
+
+- GitHub access is available for branch/PR work, but changes should remain
+  PR-first and human-reviewed.
+- Codex is installed for repo analysis, planning, and patch generation.
+- The `home-cluster` MCP server is available for Codex-assisted troubleshooting
+  using a dedicated `default/codex-mcp` ServiceAccount.
+- MCP kubeconfigs are generated into `.private/codex-mcp/kubeconfig` with `0600`
+  permissions by `task mcp:kubeconfig` for short-lived tokens or
+  `task mcp:kubeconfig-durable` for the durable service-account token path.
+- The MCP RBAC is intentionally read-focused and must not include Secret access.
+  Pod exec is limited to explicitly approved namespaces/subresources for bounded
+  inspection, not general live mutation.
+
+This does not change the autonomy model below: AI-generated changes still flow
+through Git/PR review first, and broad live-cluster mutation remains out of
+scope.
+
 ## Recommended Timing
 
 Before rebuild:
