@@ -33,6 +33,10 @@ spec:
     defaultPodOptions:
       annotations:
         setGateway: "true"
+      hostAliases:
+        - ip: "5.253.85.110"
+          hostnames:
+            - "www.torrentday.com"
     controllers:
       prowlarr:
         annotations:
