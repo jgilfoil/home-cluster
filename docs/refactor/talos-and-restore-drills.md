@@ -1,11 +1,26 @@
 # Talos And Restore Drills
 
 Captured: 2026-05-25
+Updated: 2026-07-02
 
 This note refines the earlier rehearsal recommendation. Full spare hardware is
 not currently available, and a complete production-like rehearsal cluster would
-add a lot of setup complexity. A narrower Talos VM or restore drill may still be
-worthwhile if it answers specific migration-risk questions.
+add a lot of setup complexity. A narrower Hyper-V Talos VM now exists and should
+remain focused on specific migration-risk questions rather than becoming a
+parallel homelab.
+
+## Current Talos Lab Status
+
+Read-only verification on 2026-07-02 showed:
+
+- Single-node Hyper-V Talos lab is reachable and Kubernetes node is `Ready`.
+- Talos is `v1.13.3`; Kubernetes server is `v1.36.1`.
+- `local-path-storage` is installed with a `local-path` `StorageClass`.
+- VolSync is installed in `volsync-system`.
+- Rook-Ceph has not been installed yet: no `rook-ceph` namespace and no
+  Rook/Ceph CRDs were present.
+- No PVs/PVCs or VolSync `ReplicationSource`/`ReplicationDestination` resources
+  were present at the time of the check.
 
 ## Downtime Framing
 
@@ -23,15 +38,17 @@ the restore path and bootstrap sequence are well understood.
 
 ## Talos VM Scope
 
-A Hyper-V Talos VM can be useful as a focused spike, but it should not start as
-a full GitOps clone of the homelab.
+The Hyper-V Talos VM is useful as a focused spike, but it should not start as a
+full GitOps clone of the homelab.
 
 Useful questions for a VM:
 
 - Can a single-node Talos cluster be brought up without excessive friction?
-- Can CNI, basic storage, and VolSync/restic run correctly on Talos?
+- Can CNI, basic storage, VolSync/restic, and Rook-Ceph run correctly enough on
+  Talos to support the first rebuild path?
 - Can the VM reach the backup endpoint that VolSync uses?
-- Can a small restic backup be restored into a scratch PVC?
+- Can a small restic backup be restored into a scratch PVC if a new risk calls
+  for that check?
 
 Questions a VM probably will not answer well:
 
@@ -63,7 +80,7 @@ test environment, but that is not the first goal.
 
 The safest useful restore drill is an alternate-PVC restore:
 
-1. Pick a small VolSync-backed app first.
+1. Pick a target that answers a concrete remaining risk.
 2. Create a separate restore destination and PVC name.
 3. Point the restore at the existing restic repository credentials.
 4. Restore into the scratch PVC.
@@ -80,10 +97,14 @@ Guardrails:
 - Do not start a duplicate production Plex instance against restored Plex state.
 - Avoid running the drill during scheduled backup windows if possible.
 
-For Plex, a full production-like validation is not practical without a larger
-lab architecture. A useful compromise is to restore Plex metadata into an
-alternate PVC, inspect it read-only, and validate that expected database and
-metadata files are present.
+Plex VolSync restore has already been tested far enough to validate expected
+restored files. From here, additional Plex validation should stay lightweight
+unless a new risk appears. A full production-like validation is not practical
+without a larger lab architecture and should not be required by default.
+
+A separate small-app restore drill is no longer required as a default next step.
+Use one only if it answers a concrete remaining question that the Plex restore
+did not answer.
 
 The concrete manual runbook is
 [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md). Its companion
@@ -116,11 +137,16 @@ Do not decrypt or print secret values into planning notes.
 
 ## Storage Decision Link
 
-The Rook decision should depend on restore complexity, not preference alone.
+The Rook decision should depend on restore complexity and Talos-lab friction,
+not preference alone.
 
 Current working heuristic:
 
-- If Talos + Rook + VolSync restore can be made boring enough, keep Rook for the
-  first rebuild and evaluate storage simplification later.
+- Keep Rook for the first rebuild unless Talos-lab testing exposes a concrete
+  blocker. Evaluate storage simplification later, after the cluster OS and
+  bootstrap path are modernized.
 - If restore on Talos through Rook looks painful or fragile, evaluate simpler
   options before committing to Rook again.
+
+As of 2026-07-02, the Talos lab has not yet tested Rook-Ceph: Rook/Ceph CRDs and
+the `rook-ceph` namespace were absent during read-only verification.
