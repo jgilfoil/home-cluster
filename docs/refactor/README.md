@@ -13,10 +13,11 @@ discussion.
 1. [Current State](./current-state.md)
 2. [Project Roadmap](./project-roadmap.md)
 3. [Automation And AI](./automation-and-ai.md)
-4. [Talos And Restore Drills](./talos-and-restore-drills.md)
-5. [Talos Codex MCP Access Bootstrap](./talos-codex-mcp-access.md)
-6. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
-7. [Open Questions](./open-questions.md)
+4. [Pre-Cutover Safety Checklist](./pre-cutover-safety-checklist.md)
+5. [Talos And Restore Drills](./talos-and-restore-drills.md)
+6. [Talos Codex MCP Access Bootstrap](./talos-codex-mcp-access.md)
+7. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
+8. [Open Questions](./open-questions.md)
 
 ## Major Goals
 
@@ -52,6 +53,10 @@ discussion.
   deferred until the last pre-cutover hardening pass.
 - Old k3s/Ansible/bootstrap scaffolding should be archived as historical
   reference, not maintained as the v3 build path.
+- Before any real-node formatting, use the
+  [Pre-Cutover Safety Checklist](./pre-cutover-safety-checklist.md) as the
+  hard gate for backup/export confidence, endpoint survival, restore acceptance,
+  and point-of-no-return approval.
 
 ## Current Lab Status
 
