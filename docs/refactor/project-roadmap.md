@@ -1,6 +1,7 @@
 # Project Roadmap
 
 Captured: 2026-05-12
+Updated: 2026-07-05
 
 ## Goals
 
@@ -26,18 +27,21 @@ This should be treated as a v3 cluster project.
 
 The current strategic bias is:
 
-- Talos is the likely future Kubernetes node OS.
+- Talos is the target Kubernetes node OS for the v3 rebuild.
 - Keep Cilium, Flux, Renovate, SOPS-age, VolSync, and the existing network
   model.
-- Keep Rook-Ceph for the first Talos rebuild if that materially lowers storage
-  migration risk, then evaluate replacing it later.
+- Keep Rook-Ceph for the first Talos rebuild unless real-node disk planning or
+  restore validation exposes a concrete blocker, then evaluate replacing it
+  later.
 - Do not migrate to VLANs or Gateway API during the same cutover.
 - Temporarily reduce Renovate automerge while the rebuild is underway.
 - Treat downtime as a sliding tradeoff. The preferred target is a planned
   maintenance window of hours if that can be achieved with reasonable
   preparation, while avoiding plans that casually risk multiple days offline.
 - Use restore drills to reduce risk, but do not require a full parallel
-  rehearsal cluster before the migration shape is clear.
+  rehearsal cluster before the migration shape is clear. Plex VolSync restore
+  has already validated expected restored files, so further Plex validation
+  should stay lightweight unless a new risk appears.
 
 ## Phase 0: Planning And Inventory
 
@@ -51,12 +55,17 @@ Deliverables:
 - Decision on temporary hardware or VM rehearsal.
 - Restore acceptance checklist, especially for Plex and MMIA.
 
-Decision gates:
+Decision gates and current answers:
 
-- What downtime window is acceptable?
-- Can temporary hardware or VMs be used?
-- Is Rook retained for the first Talos rebuild?
-- Is Plex metadata the top restore validation target?
+- What downtime window is acceptable? A planned window measured in hours is the
+  working target if preparation makes that realistic.
+- Can temporary hardware or VMs be used? Yes: a disposable Hyper-V Talos VM is
+  already in use as a narrow lab.
+- Is Rook retained for the first Talos rebuild? Yes. The 2026-07-04 disposable
+  Talos lab proved basic single-node Rook-Ceph/RBD mechanics; real-node disk
+  planning and restore validation remain separate gates.
+- Is Plex metadata the top restore validation target? Yes, and the Plex VolSync
+  restore drill has already validated expected restored files.
 
 Current owner posture:
 
@@ -64,8 +73,9 @@ Current owner posture:
 - A few days of downtime should be avoided if reasonably possible.
 - A few hours of downtime is worth spending some planning and setup effort to
   achieve.
-- No spare hardware is currently available. Hyper-V VMs may be considered later
-  as a narrow Talos/restore test, not as a full homelab clone.
+- No spare hardware is currently available. The Hyper-V Talos VM is the narrow
+  Talos/restore lab and should be retained during the rebuild, not turned into a
+  full homelab clone.
 
 ## Phase 1: Pre-Rebuild Hardening
 
@@ -73,12 +83,17 @@ Purpose: improve recovery confidence while the current cluster still exists.
 
 Candidate work:
 
-- Prove VolSync restore with a small app first.
-- Prove Plex restore mechanics with an alternate PVC before any destructive
-  work. Do not replace the live PVC or start a duplicate production Plex
-  instance against restored state.
-- Add LimeSurvey backups if LimeSurvey will remain.
-- Decide whether `open-webui-pipelines` is preserved.
+- Do not require a separate small-app restore drill unless a new risk calls for
+  it. Plex VolSync restore has already provided the stronger validation signal.
+- Keep any additional Plex validation lightweight. Do not replace the live PVC
+  or start a duplicate production Plex instance against restored state.
+- Use the 2026-07-04 Talos-lab Rook-Ceph/RBD result as the baseline storage
+  mechanics check. The remaining storage gates are real-node disk planning,
+  VolSync restore behavior through the target storage path, and backup endpoint
+  survival if the old cluster-hosted S3/MinIO front door is unavailable.
+- Add LimeSurvey backups only in the final pre-cutover hardening pass if
+  LimeSurvey will remain.
+- Treat `open-webui-pipelines` as discard-for-now.
 - Put Renovate into rebuild-safe mode.
 - Fix currently broken Flux reconciliation items before cutover if they block
   clean bootstrap.
@@ -112,6 +127,9 @@ Likely alignment targets:
 - Digest-pinned images where practical.
 - bjw-s `app-template`, updated to current conventions.
 - spegel after the rebuild for registry resilience.
+- Archive old k3s/Ansible/bootstrap scaffolding as historical reference once the
+  Talos-focused runbooks/manifests are durable. Do not maintain that scaffolding
+  as the v3 build path.
 
 Not recommended during the initial cutover:
 
@@ -141,8 +159,14 @@ Main storage options:
 Current recommendation:
 
 Use the lower-risk path first unless testing proves Rook is unacceptable:
-Talos + current storage model + proven VolSync restore. Replacing Rook can be a
-second project once the cluster OS and bootstrap are modernized.
+Talos + Rook-Ceph + proven VolSync restore. Replacing Rook can be a second
+project once the cluster OS and bootstrap are modernized.
+
+The 2026-07-04 disposable Talos lab did not find a Rook-Ceph blocker: a
+single-node Rook `v1.20.1` / Ceph `v20.2.1` lab reached `HEALTH_OK`, provisioned
+an RBD PVC through CSI, and passed a detach/reattach write-read checksum smoke
+test. This supports keeping Rook-Ceph for the first Talos rebuild while still
+requiring real-node disk planning and VolSync restore validation.
 
 Reasons:
 
@@ -161,16 +185,21 @@ Purpose: make the destructive cutover boring.
 
 Candidate work:
 
-- Generate Talos configs without applying them.
+- Keep the existing Hyper-V Talos VM as the focused lab; it may come in handy
+  during the rebuild.
+- Generate/update Talos configs without applying them to real nodes.
 - Render Flux manifests locally.
 - Validate with kubeconform and flux-local where possible.
-- Optionally test Talos in a disposable Hyper-V VM if the migration shape makes
-  that worthwhile.
-- Test VolSync restore into alternate PVCs in a sandbox namespace, the current
-  cluster, or a disposable Talos VM. The goal is to prove restore mechanics
-  without mutating live PVCs or backup retention.
+- Reuse or rebuild the successful Rook-Ceph lab only when it answers a concrete
+  remaining cutover question.
+- Use additional VolSync restore checks only where they answer a concrete
+  remaining risk. The goal is to prove restore mechanics without mutating live
+  PVCs or backup retention.
 - Write the exact cutover runbook.
-- Confirm rollback points and when old backups become untouchable.
+- Define the point-of-no-return gate. There may be no practical same-hardware
+  rollback after real nodes are reformatted, so the safety model is final
+  backups, exports, acceptance criteria, and untouched backup history rather
+  than assuming rollback is available.
 
 If no temporary hardware is available, this phase becomes even more important
 because the real cutover is an outage.

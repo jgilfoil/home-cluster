@@ -1,6 +1,7 @@
 # Current State
 
 Captured: 2026-05-12
+Updated: 2026-07-05
 
 ## Hardware
 
@@ -13,6 +14,9 @@ The live hardware still matches the committed README and Ansible inventory:
 
 The cluster is currently k3s-based. The committed k3s version is
 `v1.30.1+k3s1`.
+
+A separate Hyper-V Talos lab VM exists for narrow smoke/restore validation and
+should be retained during the rebuild. It is not a full parallel homelab.
 
 ## Network Constraints
 
@@ -51,6 +55,7 @@ Keep and update if practical:
 Disposable:
 
 - `financial-planner`, which is abandoned.
+- `open-webui-pipelines`, which is discard-for-now for v3 planning.
 
 Supporting platform services are important because the cluster needs them, but
 they are not directly user-facing in the same way as media and MMIA.
@@ -96,11 +101,12 @@ backup/restore path has failed.
 
 All media apps include the VolSync template in Git. `open-webui` includes the
 basic VolSync template. `limesurvey` has Ceph-backed uploads and MariaDB PVCs
-but no VolSync coverage yet.
+but no VolSync coverage yet. LimeSurvey backup coverage is deferred until the
+last pre-cutover hardening pass if the app will remain.
 
 `open-webui-pipelines` exists live as a PVC and StatefulSet, but there is no
 explicit `pipelines` configuration in the current Open WebUI HelmRelease values.
-Decide whether it is worth backing up or can be treated as disposable.
+It is discard-for-now for v3 planning unless the owner later reclassifies it.
 
 MMIA is not purely stateless. The Discord bot deployments mount
 `mymindinai-images-nfs` at `/app/images`. The retained NFS PVs point to:
@@ -116,6 +122,23 @@ contains manifests, and there is a database doc, but:
 - The live cluster has no CNPG Cluster resources.
 - There were no pods in the `database` namespace on 2026-05-12.
 
+## Talos Lab Snapshot
+
+Rook-Ceph/RBD smoke testing on 2026-07-04 showed:
+
+- Single-node Hyper-V Talos lab ran Rook `v1.20.1` and Ceph `v20.2.1` /
+  Tentacle after the VM was resized to 12 GiB RAM and 4 vCPU.
+- One explicitly targeted loop-backed OSD was used; this is not representative
+  of real Odroid disk behavior.
+- `CephCluster/rook-ceph` reached `Ready` with `HEALTH_OK`.
+- `CephBlockPool/ceph-blockpool` reached `Ready` with replication size `1`.
+- RBD CSI provisioned a scratch `ceph-block` PVC.
+- A detach/reattach write-read checksum smoke test passed.
+
+This supports keeping Rook-Ceph as the working default for the first Talos
+rebuild, while real-node disk planning, VolSync restore behavior, backup
+endpoint survival, and three-node Ceph behavior remain separate gates.
+
 ## Known Current Issues
 
 These were intentionally set aside for the larger roadmap conversation, but they
@@ -124,12 +147,13 @@ should not be forgotten:
 - `kube-system/cilium` HelmRelease was not ready on 2026-05-12 because chart
   `cilium@1.16.6` rejected the deprecated `containerRuntime.integration` Helm
   value.
-- LimeSurvey should probably get backup coverage if it will remain deployed.
-- `open-webui-pipelines` needs a keep-or-discard decision.
+- LimeSurvey should probably get backup coverage if it will remain deployed, but
+  this is deferred until the last pre-cutover hardening pass.
 
 ## Git/Repo Notes
 
 The active GitOps manifests live under `kubernetes/`. Older bootstrap,
-Makejinja, Ansible, and Talos scaffolding also exists. One future cleanup
-decision is whether that scaffolding remains maintained, is archived as
-historical reference, or is replaced by a new Talos-focused bootstrap path.
+Makejinja, Ansible, and Talos scaffolding also exists. For v3, old k3s/Ansible
+and Makejinja/bootstrap scaffolding should be archived as historical reference
+once Talos-focused replacement docs/runbooks are durable. It should not remain
+the maintained v3 build path.
