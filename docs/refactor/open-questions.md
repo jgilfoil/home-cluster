@@ -1,15 +1,17 @@
 # Open Questions
 
 Captured: 2026-05-12
-Updated: 2026-07-02
+Updated: 2026-07-05
 
 These are the main questions to pick up in the next planning session.
 
 ## Resolved Or Current Decisions
 
-- Hyper-V Talos VM: yes, already exists and is the narrow smoke/restore lab.
-- Rook-Ceph: retain for the first Talos rebuild unless lab testing exposes a
-  concrete blocker.
+- Hyper-V Talos VM: yes, already exists and should be retained as the narrow
+  smoke/restore lab during the rebuild.
+- Rook-Ceph: the disposable Talos lab proved basic single-node Rook-Ceph/RBD
+  mechanics. Retain Rook-Ceph for the first Talos rebuild unless real-node disk
+  planning or restore validation exposes a concrete blocker.
 - Small restore drill: no separate small-app drill is required by default. Plex
   VolSync restore has already validated expected restored files.
 - Plex validation: keep additional validation lightweight unless a new risk
@@ -37,14 +39,16 @@ Current posture:
 - A few days should be avoided if there is a practical lower-risk path.
 - No spare hardware exists today; full rehearsal should be optional, not a hard
   prerequisite.
+- The Hyper-V Talos VM is useful enough to keep for now, but it remains a narrow
+  lab rather than a full parallel homelab clone.
 - A true same-hardware rollback after formatting nodes may not exist. The
   practical mitigation is a cutover gate with final backups, exports, restore
   confidence, acceptance criteria, and old backup history left untouched.
 
 ## Storage
 
-1. What is the current Talos-lab Rook-Ceph status, and what blocker, if any,
-   would change the current keep-Rook decision?
+1. What real-node disk planning or restore-validation blocker, if any, would
+   change the current keep-Rook decision?
 2. If Rook does prove unacceptable, what should be evaluated: Mayastor/OpenEBS,
    Longhorn, Synology/NFS-backed dynamic provisioning, or another option?
 3. Is the convenience of dynamic PVC provisioning more important than reducing
@@ -52,13 +56,13 @@ Current posture:
 
 Current posture:
 
-- The current decision is to keep Rook for the first Talos rebuild unless a
-  concrete blocker appears.
-- Read-only Talos lab verification on 2026-07-02 showed the single-node Talos
-  lab is up with local-path storage and VolSync, but Rook-Ceph has not been
-  installed yet: no `rook-ceph` namespace and no Rook/Ceph CRDs.
-- If the Rook path looks painful, simpler storage options should be evaluated
-  before committing to Rook again.
+- A disposable single-node Talos lab has proven basic Talos + Rook-Ceph + RBD
+  PVC mechanics: Rook `v1.20.1` / Ceph `v20.2.1` reached `HEALTH_OK`, RBD CSI
+  provisioned a scratch PVC, and detach/reattach checksum verification passed.
+- Rook-Ceph remains the working default for the first Talos rebuild unless
+  real-node disk planning or restore validation exposes a concrete blocker.
+- Simpler storage options should stay in reserve if real-node Rook preparation
+  or restore behavior becomes painful.
 - Restore drills should target alternate PVCs and must avoid corrupting or
   rewriting existing backup history.
 

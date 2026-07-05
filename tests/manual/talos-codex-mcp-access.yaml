@@ -1,0 +1,193 @@
+---
+# Manual-only bootstrap RBAC for a disposable Talos lab cluster.
+#
+# This is intentionally stored under tests/manual/ so Flux will not reconcile it
+# into the production cluster. Apply it with the Talos lab admin kubeconfig after
+# the Talos control plane has been bootstrapped and a Kubernetes kubeconfig has
+# been exported with `talosctl kubeconfig`.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: codex-mcp
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: codex-mcp-read
+rules:
+  - apiGroups: [""]
+    resources:
+      - endpoints
+      - events
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - services
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources:
+      - pods/log
+    verbs: ["get"]
+  - apiGroups: ["apps"]
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs: ["get", "list"]
+  - apiGroups: ["batch"]
+    resources:
+      - cronjobs
+      - jobs
+    verbs: ["get", "list"]
+  - apiGroups: ["networking.k8s.io"]
+    resources:
+      - ingresses
+      - ingressclasses
+      - networkpolicies
+    verbs: ["get", "list"]
+  - apiGroups: ["discovery.k8s.io"]
+    resources:
+      - endpointslices
+    verbs: ["get", "list"]
+  - apiGroups: ["events.k8s.io"]
+    resources:
+      - events
+    verbs: ["get", "list"]
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - csidrivers
+      - csinodes
+      - storageclasses
+      - volumeattachments
+    verbs: ["get", "list"]
+  - apiGroups: ["snapshot.storage.k8s.io"]
+    resources:
+      - volumesnapshotclasses
+      - volumesnapshotcontents
+      - volumesnapshots
+    verbs: ["get", "list"]
+  - apiGroups: ["volsync.backube"]
+    resources:
+      - replicationsources
+      - replicationdestinations
+    verbs: ["get", "list"]
+  - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+    resources:
+      - kustomizations
+    verbs: ["get", "list"]
+  - apiGroups: ["helm.toolkit.fluxcd.io"]
+    resources:
+      - helmreleases
+    verbs: ["get", "list"]
+  - apiGroups: ["source.toolkit.fluxcd.io"]
+    resources:
+      - buckets
+      - gitrepositories
+      - helmcharts
+      - helmrepositories
+      - ocirepositories
+    verbs: ["get", "list"]
+  - apiGroups: ["notification.toolkit.fluxcd.io"]
+    resources:
+      - alerts
+      - providers
+      - receivers
+    verbs: ["get", "list"]
+  - apiGroups: ["cert-manager.io"]
+    resources:
+      - certificates
+      - certificaterequests
+      - clusterissuers
+      - issuers
+    verbs: ["get", "list"]
+  - apiGroups: ["acme.cert-manager.io"]
+    resources:
+      - challenges
+      - orders
+    verbs: ["get", "list"]
+  - apiGroups: ["ceph.rook.io"]
+    resources:
+      - cephblockpools
+      - cephclients
+      - cephclusters
+      - cephfilesystems
+      - cephnfses
+      - cephobjectrealms
+      - cephobjectstores
+      - cephobjectstoreusers
+      - cephobjectzonegroups
+      - cephobjectzones
+      - cephrbdmirrors
+    verbs: ["get", "list"]
+  - apiGroups: ["cilium.io"]
+    resources:
+      - ciliumbgpclusterconfigs
+      - ciliumbgpnodeconfigs
+      - ciliumbgppeerconfigs
+      - ciliumcidrgroups
+      - ciliumclusterwideenvoyconfigs
+      - ciliumendpoints
+      - ciliumenvoyconfigs
+      - ciliumidentities
+      - ciliuml2announcementpolicies
+      - ciliumloadbalancerippools
+      - ciliumnodes
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: codex-mcp-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: codex-mcp-read
+subjects:
+  - kind: ServiceAccount
+    name: codex-mcp
+    namespace: default
+---
+# A durable token Secret is convenient for a persistent remote agent VM because
+# the bootstrap/admin kubeconfig can be removed after this token is copied into a
+# local ignored kubeconfig. Use `kubectl create token codex-mcp --duration=...`
+# instead if you want a short-lived credential.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: codex-mcp-token
+  namespace: default
+  annotations:
+    kubernetes.io/service-account.name: codex-mcp
+type: kubernetes.io/service-account-token
+---
+# Narrow exec access in default only. Add namespace-scoped Role/RoleBinding pairs
+# later for specific app namespaces if a restore drill needs non-interactive exec
+# there. Do not grant broad pod mutation.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: codex-mcp-exec
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources:
+      - pods/exec
+    verbs: ["create", "get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: codex-mcp-exec
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: codex-mcp-exec
+subjects:
+  - kind: ServiceAccount
+    name: codex-mcp
+    namespace: default

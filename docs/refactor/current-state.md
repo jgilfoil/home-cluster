@@ -1,7 +1,7 @@
 # Current State
 
 Captured: 2026-05-12
-Updated: 2026-07-02
+Updated: 2026-07-05
 
 ## Hardware
 
@@ -15,8 +15,8 @@ The live hardware still matches the committed README and Ansible inventory:
 The cluster is currently k3s-based. The committed k3s version is
 `v1.30.1+k3s1`.
 
-A separate disposable Hyper-V Talos lab VM exists for narrow smoke/restore
-validation. It is not a full parallel homelab.
+A separate Hyper-V Talos lab VM exists for narrow smoke/restore validation and
+should be retained during the rebuild. It is not a full parallel homelab.
 
 ## Network Constraints
 
@@ -124,15 +124,20 @@ contains manifests, and there is a database doc, but:
 
 ## Talos Lab Snapshot
 
-Read-only Talos lab verification on 2026-07-02 showed:
+Rook-Ceph/RBD smoke testing on 2026-07-04 showed:
 
-- Single-node Hyper-V Talos lab is reachable and Kubernetes node is `Ready`.
-- Talos is `v1.13.3`; Kubernetes server is `v1.36.1`.
-- `local-path-storage` and `volsync-system` are installed and healthy.
-- Rook-Ceph is not installed yet: no `rook-ceph` namespace and no Rook/Ceph CRDs
-  were present.
-- No PVs/PVCs or VolSync `ReplicationSource`/`ReplicationDestination` resources
-  were present at the time of the check.
+- Single-node Hyper-V Talos lab ran Rook `v1.20.1` and Ceph `v20.2.1` /
+  Tentacle after the VM was resized to 12 GiB RAM and 4 vCPU.
+- One explicitly targeted loop-backed OSD was used; this is not representative
+  of real Odroid disk behavior.
+- `CephCluster/rook-ceph` reached `Ready` with `HEALTH_OK`.
+- `CephBlockPool/ceph-blockpool` reached `Ready` with replication size `1`.
+- RBD CSI provisioned a scratch `ceph-block` PVC.
+- A detach/reattach write-read checksum smoke test passed.
+
+This supports keeping Rook-Ceph as the working default for the first Talos
+rebuild, while real-node disk planning, VolSync restore behavior, backup
+endpoint survival, and three-node Ceph behavior remain separate gates.
 
 ## Known Current Issues
 

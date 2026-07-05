@@ -1,7 +1,7 @@
 # Refactor And Rebuild Planning
 
 Captured: 2026-05-12
-Updated: 2026-07-02
+Updated: 2026-07-05
 
 This directory preserves the planning context for the next major refactor/rebuild
 of the home cluster. The goal is to continue in a clean session without losing
@@ -14,8 +14,9 @@ discussion.
 2. [Project Roadmap](./project-roadmap.md)
 3. [Automation And AI](./automation-and-ai.md)
 4. [Talos And Restore Drills](./talos-and-restore-drills.md)
-5. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
-6. [Open Questions](./open-questions.md)
+5. [Talos Codex MCP Access Bootstrap](./talos-codex-mcp-access.md)
+6. [Plex VolSync Restore Drill](./plex-volsync-restore-drill.md)
+7. [Open Questions](./open-questions.md)
 
 ## Major Goals
 
@@ -40,10 +41,11 @@ discussion.
 - Treat downtime as a budget and tradeoff, not a binary target. Near-zero
   downtime is desirable but not at unlimited cost or complexity.
 - Full rehearsal hardware is not currently available. A Hyper-V Talos VM now
-  exists as a narrow smoke/restore lab, but should not become a parallel GitOps
-  clone of the whole homelab.
-- Keep Rook-Ceph for the first Talos rebuild unless lab work exposes a concrete
-  blocker. Replacing storage can be a later project.
+  exists as a narrow smoke/restore lab and should be retained during the rebuild,
+  but should not become a parallel GitOps clone of the whole homelab.
+- Keep Rook-Ceph for the first Talos rebuild unless real-node storage planning
+  or restore validation exposes a concrete blocker. Replacing storage can be a
+  later project.
 - Plex VolSync restore has been tested far enough to validate expected restored
   files. Do not overbuild additional Plex validation unless a new risk appears.
 - `open-webui-pipelines` is discard-for-now. LimeSurvey backup coverage is
@@ -53,15 +55,18 @@ discussion.
 
 ## Current Lab Status
 
-Read-only Talos lab verification on 2026-07-02 showed:
+The Hyper-V Talos lab should be kept for now because it may remain useful during
+the rebuild. The important validated state from 2026-07-04 is:
 
-- Single-node Hyper-V Talos lab is reachable and Kubernetes node is `Ready`.
-- Talos is `v1.13.3`; Kubernetes server is `v1.36.1`.
-- `local-path-storage` and `volsync-system` are installed and healthy.
-- Rook-Ceph is **not** installed yet: no `rook-ceph` namespace and no Rook/Ceph
-  CRDs were present.
-- No PVs/PVCs or VolSync `ReplicationSource`/`ReplicationDestination` resources
-  were present at the time of the check.
+- Single-node Hyper-V Talos lab ran Rook `v1.20.1` / Ceph `v20.2.1` with one
+  explicitly targeted loop-backed OSD.
+- `CephCluster/rook-ceph` reached `Ready` with `HEALTH_OK`.
+- `CephBlockPool/ceph-blockpool` reached `Ready` with replication size `1`.
+- RBD CSI provisioned a scratch `ceph-block` PVC.
+- A detach/reattach write-read checksum smoke test passed.
+- The result proves basic Talos + Rook-Ceph + RBD mechanics only; real-node disk
+  planning, three-node behavior, performance, and VolSync restore behavior still
+  require separate gates.
 
 ## Related Docs
 
