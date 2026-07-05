@@ -54,6 +54,9 @@ Deliverables:
 - Explicit downtime target.
 - Decision on temporary hardware or VM rehearsal.
 - Restore acceptance checklist, especially for Plex and MMIA.
+- [Pre-cutover safety checklist](./pre-cutover-safety-checklist.md) that defines
+  backup/export confidence, backup endpoint survival, restore acceptance, and
+  the point-of-no-return gate before real-node formatting.
 
 Decision gates and current answers:
 
@@ -91,6 +94,9 @@ Candidate work:
   mechanics check. The remaining storage gates are real-node disk planning,
   VolSync restore behavior through the target storage path, and backup endpoint
   survival if the old cluster-hosted S3/MinIO front door is unavailable.
+- Keep the [Pre-Cutover Safety Checklist](./pre-cutover-safety-checklist.md)
+  current as each gate is answered. Treat it as a safety gate, not the final
+  step-by-step cutover runbook.
 - Add LimeSurvey backups only in the final pre-cutover hardening pass if
   LimeSurvey will remain.
 - Treat `open-webui-pipelines` as discard-for-now.
@@ -196,10 +202,11 @@ Candidate work:
   remaining risk. The goal is to prove restore mechanics without mutating live
   PVCs or backup retention.
 - Write the exact cutover runbook.
-- Define the point-of-no-return gate. There may be no practical same-hardware
-  rollback after real nodes are reformatted, so the safety model is final
-  backups, exports, acceptance criteria, and untouched backup history rather
-  than assuming rollback is available.
+- Define the point-of-no-return gate using the
+  [Pre-Cutover Safety Checklist](./pre-cutover-safety-checklist.md). There may
+  be no practical same-hardware rollback after real nodes are reformatted, so
+  the safety model is final backups, exports, acceptance criteria, and untouched
+  backup history rather than assuming rollback is available.
 
 If no temporary hardware is available, this phase becomes even more important
 because the real cutover is an outage.

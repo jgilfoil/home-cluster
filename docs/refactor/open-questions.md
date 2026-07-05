@@ -29,7 +29,8 @@ These are the main questions to pick up in the next planning session.
    bootstrap risk are better understood?
 2. Is the owner willing to do a same-hardware outage if restore testing is
    strong enough?
-3. What is the explicit point-of-no-return gate before nodes are reformatted?
+3. What exact evidence must be attached to the point-of-no-return gate before
+   nodes are reformatted?
 
 Current posture:
 
@@ -44,6 +45,9 @@ Current posture:
 - A true same-hardware rollback after formatting nodes may not exist. The
   practical mitigation is a cutover gate with final backups, exports, restore
   confidence, acceptance criteria, and old backup history left untouched.
+- The initial [Pre-Cutover Safety Checklist](./pre-cutover-safety-checklist.md)
+  now defines the gate shape; the remaining work is filling in concrete
+  evidence and final owner decisions before any destructive action.
 
 ## Storage
 
