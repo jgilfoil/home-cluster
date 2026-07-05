@@ -55,10 +55,14 @@ Use these markers while preparing for cutover:
 
 MUST PASS:
 
-- `[ ]` Jason confirms the cutover target: same Odroid nodes, Talos target, and
-  no parallel hardware assumption.
-- `[ ]` Jason confirms the acceptable outage window for this attempt.
-- `[ ]` The rebuild is staged from the agreed branch strategy: `main` as durable
+- `[~]` Jason confirms the cutover target: same Odroid nodes, Talos target, and
+  no parallel hardware assumption. Current repo evidence says Talos is the target
+  and no spare hardware exists; the Hyper-V Talos VM is only a narrow lab.
+  Final point-of-no-return confirmation still remains required.
+- `[~]` Jason confirms the acceptable outage window for this attempt. Current
+  owner posture targets a planned outage measured in hours if preparation makes
+  that realistic, while avoiding plans that casually risk multiple days offline.
+- `[x]` The rebuild is staged from the agreed branch strategy: `main` as durable
   truth, short-lived PR branches for prep, and a long-lived rebuild branch only
   if unreconciled Talos/GitOps implementation changes need to accumulate before
   cutover.
@@ -80,24 +84,36 @@ Abort if:
 
 MUST PASS:
 
-- `[ ]` `main` contains the accepted planning docs and latest safety checklist.
-- `[ ]` Any real Talos/GitOps implementation changes are in a reviewed PR or an
-  explicitly named rebuild staging branch.
+- `[x]` `main` contains the accepted planning docs and latest safety checklist.
+  PRs #1278 and #1279 landed the docs reconciliation and this checklist in
+  `origin/main`.
+- `[~]` Any real Talos/GitOps implementation changes are in a reviewed PR or an
+  explicitly named rebuild staging branch. No real-node implementation branch is
+  needed yet because the current work is still docs/evidence preparation.
 - `[ ]` Local rendered manifests validate with the repository's chosen
   validation commands.
-- `[ ]` Flux bootstrap source, branch, and path for the rebuilt cluster are
-  explicit.
-- `[ ]` SOPS-age usage stays unchanged unless a separate reviewed migration is
-  approved.
-- `[ ]` Old k3s/Ansible/bootstrap scaffolding is either archived or clearly
-  labeled historical so it cannot be mistaken for the v3 path.
-- `[ ]` GitHub access, repo access, and a local copy of the runbook are available
-  even if the old cluster is offline.
+- `[~]` Flux bootstrap source, branch, and path for the rebuilt cluster are
+  explicit. Current Flux source is `https://github.com/jgilfoil/home-cluster`,
+  branch `main`, path `./kubernetes/flux`, with `cluster-apps` at
+  `./kubernetes/apps`; final rebuilt-cluster bootstrap still needs to confirm
+  whether this remains the cutover source.
+- `[x]` SOPS-age usage stays unchanged unless a separate reviewed migration is
+  approved. Current Flux decryption references `sops`/`sops-age`, and `.sops.yaml`
+  uses age for Kubernetes and Ansible SOPS files.
+- `[~]` Old k3s/Ansible/bootstrap scaffolding is either archived or clearly
+  labeled historical so it cannot be mistaken for the v3 path. The current
+  decision is to archive it as historical once Talos replacement docs/runbooks
+  are durable; the archive pass has not happened yet.
+- `[~]` GitHub access, repo access, and a local copy of the runbook are available
+  even if the old cluster is offline. GitHub/SSH/`gh` access works from the
+  Hermes VM; final cutover still needs a local/offline runbook copy check.
 
 Suggested repo-only validation:
 
 ```bash
-cd /home/wadsworth/projects/github.com/jgilfoil/home-cluster
+# Prefer a clean worktree from origin/main if the canonical checkout has local
+# owner edits.
+cd /home/wadsworth/worktrees/<clean-home-cluster-worktree>
 
 git fetch --prune origin
 git status --short --branch
@@ -114,7 +130,10 @@ Do not invent validation commands if repository tasks change; inspect `task
 ## 3. Live Inventory Export Gate
 
 This section requires explicit live-cluster approval at the time it is run. Do
-not run these commands as part of docs work.
+not run these commands as part of docs work. The 2026-07-05 repo-only evidence
+pass did not run `kubectl`, `flux`, `helm`, or any live cluster inspection.
+Current inventory references in repo docs are useful planning context, not final
+pre-format evidence.
 
 MUST PASS:
 
@@ -159,21 +178,30 @@ Do not export `Secret` objects or decrypted SOPS values.
 
 MUST PASS:
 
-- `[ ]` Each critical VolSync-backed workload has a recent successful backup
-  recorded by status, not by Secret inspection.
-- `[ ]` Plex restore confidence is recorded. The existing alternate-PVC restore
+- `[~]` Each critical VolSync-backed workload has a recent successful backup
+  recorded by status, not by Secret inspection. Repo docs list VolSync coverage
+  for `default/open-webui` and media apps from the 2026-05-12 inventory; final
+  recent backup status still requires approved live inventory/export.
+- `[x]` Plex restore confidence is recorded. The existing alternate-PVC restore
   drill has already validated expected restored files; do not repeat it unless a
   new risk appears.
-- `[ ]` Media apps with small Ceph PVCs have either recent backup status or a
+- `[~]` Media apps with small Ceph PVCs have either recent backup status or a
   deliberate reason why Plex restore coverage is sufficient for this cutover.
-- `[ ]` MMIA production image storage is accounted for. The NFS-backed retained
-  PV path must be reachable or otherwise protected before cutover.
-- `[ ]` LimeSurvey is either explicitly retired/deferred or has final pre-cutover
-  backup coverage for both uploads and MariaDB state.
-- `[ ]` `open-webui-pipelines` remains discard-for-now unless Jason reclassifies
+  Repo docs list media VolSync coverage, but final recent backup status still
+  requires approved live evidence.
+- `[~]` MMIA production image storage is accounted for. Git records retained NFS
+  PVs mounted at `/app/images` and backed by Synology paths under
+  `/volume11/MyMindInAI/`; final NAS reachability/protection evidence is still
+  required before cutover.
+- `[~]` LimeSurvey is either explicitly retired/deferred or has final pre-cutover
+  backup coverage for both uploads and MariaDB state. Current decision is to
+  defer LimeSurvey backup coverage until the last pre-cutover hardening pass if
+  the app remains.
+- `[x]` `open-webui-pipelines` remains discard-for-now unless Jason reclassifies
   it.
-- `[ ]` Old backup history will remain untouched until acceptance criteria are
-  met after the rebuild.
+- `[~]` Old backup history will remain untouched until acceptance criteria are
+  met after the rebuild. This is recorded as a hard guardrail, but final cutover
+  discipline still has to preserve it operationally.
 
 Hard guardrails:
 
@@ -191,17 +219,22 @@ smoke test.
 
 MUST PASS:
 
-- `[ ]` The team knows whether VolSync/restic currently targets a
+- `[~]` The team knows whether VolSync/restic currently targets a
   cluster-internal service DNS name, a LAN-reachable MinIO/S3 URL, or another
-  endpoint.
+  endpoint. Repo templates show `RESTIC_REPOSITORY_URL` is substituted into
+  VolSync/restic repository URLs; the actual substituted endpoint must be
+  verified without printing secret values.
 - `[ ]` If the endpoint is cluster-hosted MinIO/S3, the cutover plan explains how
   restore access works while the old cluster is offline.
-- `[ ]` If MinIO stores objects on Synology/NFS, the object data and the S3 API
-  front door are treated as separate dependencies.
+- `[x]` If MinIO stores objects on Synology/NFS, the object data and the S3 API
+  front door are treated as separate dependencies. The repo models MinIO data as
+  NFS-backed storage and exposes an S3 service/ingress; endpoint survival still
+  needs to be proven separately.
 - `[ ]` A restore-capable S3 endpoint is reachable from the Talos target or from
   the restore execution environment before old nodes are formatted.
-- `[ ]` The acceptance path does not require decrypting or printing SOPS/Secret
-  values in runbooks.
+- `[~]` The acceptance path does not require decrypting or printing SOPS/Secret
+  values in runbooks. Current runbooks and guardrails require secret-free
+  evidence; the final restore proof still needs to follow that constraint.
 
 Acceptable endpoint-survival answers include:
 
@@ -222,16 +255,25 @@ Abort if:
 
 MUST PASS:
 
-- `[ ]` Every real node has a disk inventory with stable identifiers recorded:
-  model, serial, size, by-id path where available, and intended role.
-- `[ ]` The Talos install disk is explicitly identified per node.
-- `[ ]` The Rook-Ceph OSD candidate disks are explicitly identified per node.
-- `[ ]` The plan avoids `useAllDevices` unless Jason approves it after reviewing
-  the real disk inventory.
-- `[ ]` Any disks to wipe are listed by stable identifier, not only by
-  `/dev/sdX`-style names.
-- `[ ]` The expected Rook-Ceph topology is clear for three real nodes.
-- `[ ]` The known Talos-lab limitation is understood: the loop-backed single-node
+- `[!]` Every real node has a disk inventory with stable identifiers recorded:
+  model, serial, size, by-id path where available, and intended role. Current
+  repo/docs only identify current nodes and the old Rook config; stable real-disk
+  identifiers are not recorded yet.
+- `[!]` The Talos install disk is explicitly identified per node. This remains a
+  blocker before any real-node Talos apply or formatting action.
+- `[!]` The Rook-Ceph OSD candidate disks are explicitly identified per node. The
+  current committed Rook config targets `/dev/sda` on each Odroid, which is not a
+  sufficient stable identifier for the cutover runbook.
+- `[x]` The plan avoids `useAllDevices` unless Jason approves it after reviewing
+  the real disk inventory. Current committed Rook config has `useAllDevices:
+  false`; keep that posture unless Jason reviews and approves otherwise.
+- `[!]` Any disks to wipe are listed by stable identifier, not only by
+  `/dev/sdX`-style names. No final wipe list exists yet.
+- `[~]` The expected Rook-Ceph topology is clear for three real nodes. Current
+  repo topology is three Odroid nodes with Rook replication size 3 and host
+  failure domain; the target Talos topology still needs final review against
+  real disks.
+- `[x]` The known Talos-lab limitation is understood: the loop-backed single-node
   RBD test proves mechanics, not real-disk parity, quorum behavior, or
   performance.
 
@@ -248,15 +290,21 @@ Abort if:
 MUST PASS:
 
 - `[ ]` Talos version and Kubernetes version are chosen and recorded.
-- `[ ]` Node IPs, API VIP, gateway, DNS, and hostnames are chosen and recorded.
+- `[~]` Node IPs, API VIP, gateway, DNS, and hostnames are chosen and recorded.
+  Current committed cluster notes record Odroid node IPs and Kubernetes API VIP;
+  final Talos target values still need to be confirmed in generated configs.
 - `[ ]` Talos machine configs are generated and validated before application to
   real nodes.
-- `[ ]` Cilium mode and kube-proxy replacement posture are explicit.
-- `[ ]` Bootstrap order is documented: first control plane, remaining control
-  planes, kubeconfig export, Cilium, core controllers, Flux.
-- `[ ]` Kubeconfig and Talosconfig handling avoids printing credentials into
+- `[~]` Cilium mode and kube-proxy replacement posture are explicit. The roadmap
+  says to keep Cilium and current network posture; final Talos/Cilium config is
+  not generated yet.
+- `[~]` Bootstrap order is documented: first control plane, remaining control
+  planes, kubeconfig export, Cilium, core controllers, Flux. This checklist and
+  roadmap contain the high-level order; the final command-level cutover runbook
+  does not exist yet.
+- `[x]` Kubeconfig and Talosconfig handling avoids printing credentials into
   notes or chat.
-- `[ ]` The Hyper-V Talos lab is used only for concrete remaining questions, not
+- `[x]` The Hyper-V Talos lab is used only for concrete remaining questions, not
   as an assumed full rehearsal.
 
 Suggested pre-apply validation shape:
@@ -272,17 +320,23 @@ approved.
 
 MUST PASS:
 
-- `[ ]` Current flat LAN model remains in place for cutover.
-- `[ ]` VLAN migration remains explicitly deferred.
-- `[ ]` Gateway API / Envoy Gateway migration remains explicitly deferred.
-- `[ ]` VIP/LB behavior is documented for the Talos control plane and any service
-  load balancer path.
-- `[ ]` Internal and external ingress-nginx paths are preserved or replaced by an
-  explicitly reviewed equivalent.
-- `[ ]` Cloudflare tunnel behavior is documented.
-- `[ ]` k8s-gateway and external-dns behavior is documented.
-- `[ ]` cert-manager issuer/certificate behavior is documented.
-- `[ ]` A post-restore DNS/ingress smoke-test list exists.
+- `[x]` Current flat LAN model remains in place for cutover.
+- `[x]` VLAN migration remains explicitly deferred.
+- `[x]` Gateway API / Envoy Gateway migration remains explicitly deferred.
+- `[~]` VIP/LB behavior is documented for the Talos control plane and any service
+  load balancer path. Current Kubernetes API VIP is recorded; Talos control-plane
+  VIP and service load-balancer behavior still need final runbook detail.
+- `[~]` Internal and external ingress-nginx paths are preserved or replaced by an
+  explicitly reviewed equivalent. Current strategy is preserve, not replace;
+  final smoke targets still need concrete route names.
+- `[~]` Cloudflare tunnel behavior is documented. It is an in-scope preserved
+  network component, but final cutover behavior and smoke tests need detail.
+- `[~]` k8s-gateway and external-dns behavior is documented. They are preserved
+  components; final DNS smoke tests need concrete records.
+- `[~]` cert-manager issuer/certificate behavior is documented. The component is
+  preserved; final certificate smoke tests need concrete resources.
+- `[~]` A post-restore DNS/ingress smoke-test list exists. This checklist defines
+  the minimum categories; final runbook needs exact names/URLs.
 
 Minimum smoke-test targets after rebuild:
 
@@ -297,10 +351,17 @@ Minimum smoke-test targets after rebuild:
 
 MUST PASS:
 
-- `[ ]` Restore order is documented.
-- `[ ]` Acceptance criteria are written before the outage starts.
-- `[ ]` Each critical app has a minimum viable verification step.
-- `[ ]` Noncritical/disposable apps are explicitly allowed to wait.
+- `[~]` Restore order is documented. This checklist and roadmap define the
+  high-level restore order; the final command-level runbook does not exist yet.
+- `[~]` Acceptance criteria are written before the outage starts. Draft criteria
+  exist in this checklist and `open-questions.md`; final owner-approved criteria
+  still need to be recorded.
+- `[~]` Each critical app has a minimum viable verification step. Draft critical
+  app targets are listed; exact verification commands/URLs still need to be
+  written.
+- `[~]` Noncritical/disposable apps are explicitly allowed to wait. Repo docs mark
+  `financial-planner` abandoned and `open-webui-pipelines` discard-for-now;
+  any remaining deferrals should be captured in the final runbook.
 
 Recommended restore order:
 
@@ -375,6 +436,22 @@ MUST PASS before declaring the rebuild complete:
   are cleaned up or intentionally retained with documented scope.
 - `[ ]` The cutover runbook is updated with actual commands, timing, failures,
   and fixes.
+
+## Repo-Only Evidence Pass: 2026-07-05
+
+This pass used only repository files, merged PR state, and the durable project
+ledger. It did not use live production k3s, Talos lab mutation, Secret
+inspection, SOPS decryption, kubeconfigs, or restic credentials. Items marked
+`[x]` are complete only for their repo/decision scope; final cutover actions
+still require the explicit point-of-no-return gate.
+
+Key remaining blockers after this pass:
+
+- Approved live inventory export and final backup status evidence.
+- Backup endpoint survival proof while the old cluster is offline.
+- Real-node disk inventory by stable identifier before any wipe/format command.
+- Generated and validated Talos configs for the exact target nodes.
+- Command-level cutover runbook and final owner-approved outage window.
 
 ## Evidence Log Template
 
