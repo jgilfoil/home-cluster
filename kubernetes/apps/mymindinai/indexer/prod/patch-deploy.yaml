@@ -1,0 +1,14 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: indexer
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: indexer
+          image: jgilfoil/mymindinai-indexer:latest
+          imagePullPolicy: IfNotPresent
+

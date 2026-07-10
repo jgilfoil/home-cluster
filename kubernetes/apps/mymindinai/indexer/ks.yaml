@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: indexer-dev
+  namespace: flux-system
+spec:
+  targetNamespace: &namespace mymindinai-dev
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: &app indexer
+  path: ./kubernetes/apps/mymindinai/indexer/dev
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: false
+  interval: 30m
+  retryInterval: 5m30s
+  timeout: 5m
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  postBuild:
+    substitute:
+      APP: *app
+      NAMESPACE: *namespace
+
+# ---
+# # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# apiVersion: kustomize.toolkit.fluxcd.io/v1
+# kind: Kustomization
+# metadata:
+#   name: &app indexer
+#   namespace: flux-system
+# spec:
+#   targetNamespace: &namespace mymindinai
+#   commonMetadata:
+#     labels:
+#       app.kubernetes.io/name: *app
+#   path: ./kubernetes/apps/mymindinai/indexer/prod
+#   prune: true
+#   sourceRef:
+#     kind: GitRepository
+#     name: home-kubernetes
+#   wait: false
+#   interval: 30m
+#   retryInterval: 5m30s
+#   timeout: 5m
+#   decryption:
+#     provider: sops
+#     secretRef:
+#       name: sops-age
+#   postBuild:
+#     substitute:
+#       APP: *app
+#       NAMESPACE: *namespace
+

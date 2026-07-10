@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: indexer-config
+data:
+  BATCH_SIZE: "10"
+  PREFETCH: "20"
+  VISIBILITY_EXTENSION: "false"
+  LOG_LEVEL: "info"
+
