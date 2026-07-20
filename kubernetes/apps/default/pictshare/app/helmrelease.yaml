@@ -32,7 +32,7 @@ spec:
           app:
             image: 
               repository: ghcr.io/hascheksolutions/pictshare
-              tag: 2.0.2
+              tag: 2.0.3
             env:
               TZ: ${TIMEZONE}
               ALLOWED_SUBNET: "192.168.1.0/24"
