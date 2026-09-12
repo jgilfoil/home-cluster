@@ -4,6 +4,47 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
+  # Temporary two-node operation: stop monitoring without removing its data or CRs.
+  # Keep the operator running so it enforces the zero-replica custom resources.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: monitoring.coreos.com
+              version: v1
+              kind: Prometheus
+              name: kube-prometheus-stack
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
+          - target:
+              group: monitoring.coreos.com
+              version: v1
+              kind: Alertmanager
+              name: kube-prometheus-stack
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: kube-prometheus-stack-kube-state-metrics
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
+          - target:
+              group: apps
+              version: v1
+              kind: DaemonSet
+              name: kube-prometheus-stack-prometheus-node-exporter
+            patch: |-
+              - op: add
+                path: /spec/template/spec/nodeSelector/maintenance.home.arpa~1monitoring-enabled
+                value: "true"
   interval: 30m
   timeout: 15m
   chart:

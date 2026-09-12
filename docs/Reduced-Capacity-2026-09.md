@@ -38,6 +38,7 @@ and Ceph currently depend on the two survivors.
 | `default/open-webui` | Web StatefulSet and pipelines Deployment to zero | 0m |
 | `default/pictshare` | Deployment to zero | 0m |
 | `observability/grafana` | Deployment to zero | 0m |
+| `observability/kube-prometheus-stack` | Prometheus and Alertmanager to zero, kube-state-metrics to zero, node-exporter requires an absent node label | 0m |
 | `kube-system/system-upgrade-controller` | Deployment to zero | 0m |
 | `kube-system/kured` | Require an absent node label so no reboot daemon runs | 0m |
 
@@ -50,20 +51,37 @@ attachments or guarantee sufficient CPU during transcoding peaks.
 Keep all media and MMIA production manifests unchanged. Keep Flux, Ceph and CSI,
 OpenEBS, MinIO, VolSync, snapshot-controller, DNS, Cilium, ingress, Cloudflare,
 VPN routing, certificates, GPU discovery/plugins, and metrics-server running.
-Keep Prometheus, Alertmanager, and exporters to observe the degraded cluster;
-Prometheus used about 0.2 CPU in the sample. Homepage remains available.
+Pause Prometheus, Alertmanager, kube-state-metrics, node-exporter, and Grafana
+at the owner's request. These workloads have no CPU requests, so the reservation
+savings above are unchanged; a later sample measured about 0.3 CPU and 2 GiB of
+memory in total actual usage. Metrics collection, alert delivery, and Grafana
+will be unavailable. Homepage remains available.
+
+Keep the Prometheus operator running only to reconcile the zero-replica
+Prometheus and Alertmanager custom resources. It used 1m CPU and 37 MiB in the
+sample. Scaling their StatefulSets directly would let the operator restore them;
+stopping the operator in the same rollout could prevent it from scaling them
+down at all. It also serves the existing PrometheusRule admission webhooks used
+by other Helm releases. Embedded metrics endpoints in essential storage/network
+components and the Kubernetes metrics API remain unchanged.
 
 The edits use explicit HelmRelease `postRenderers` to set workload replicas
 after Helm renders the existing chart. This makes the temporary state part of
 each Helm release, so both Flux and subsequent Helm reconciliation preserve it.
 Kured's post-render patch requires `maintenance.home.arpa/reboot-enabled=true`;
 no node has that label. Do not add it during this incident.
+Node-exporter similarly requires `maintenance.home.arpa/monitoring-enabled=true`,
+which no node has. Do not add that label while monitoring is paused.
 
 No app is removed from a Kustomization, no release is uninstalled, and no storage
-resource, Secret, or backup configuration is changed. The two affected
-StatefulSets use existing PVCs and have `Retain` policies for deletion and scale
-down. Grafana's PVC and Pictshare's NFS uploads remain in place. Paused services
-are unavailable, but their persisted data is retained.
+resource, Secret, or backup configuration is changed. The application
+StatefulSets use existing PVCs. All four affected StatefulSets have `Retain`
+policies for deletion and scale down, including Prometheus and Alertmanager.
+Grafana's PVC and Pictshare's NFS uploads remain in place. Monitoring CRs,
+Services, dashboards, rules, and volume claim templates also remain declared.
+Paused services are unavailable, but their persisted data is retained. Existing
+Prometheus and Alertmanager retention settings resume when they restart; pausing
+does not replace the need to export history if it must be kept past retention.
 
 ## Remaining storage recovery
 
@@ -87,21 +105,29 @@ can use new cache claims on surviving storage without deleting the old claims.
 
 Before rollout, run the repository's `scripts/kubeconform.sh`, server-side dry-run
 validation of the changed HelmReleases, and rendering of the exact chart
-artifacts cached by Flux. Verify that post-rendering changes only the eleven
-Deployment/StatefulSet replica fields and Kured's node selector, preserves the
-rendered resource inventory, and introduces no upgrade hooks.
+artifacts cached by Flux. Verify that post-rendering changes only the twelve
+Deployment/StatefulSet replica fields, the two monitoring CR replica fields,
+and Kured/node-exporter node selectors, and preserves the rendered resource
+inventory. Review any existing upgrade hooks separately.
+The monitoring chart's existing admission hooks create a missing admission
+certificate Secret and patch the admission webhooks; these hooks are unchanged.
+The local render check uses placeholder values and does not read the release's
+Secret-based Alertmanager configuration.
 
-After rollout, verify the source revision, all ten HelmRelease conditions, zero
-desired replicas for paused workloads, and zero eligible Kured nodes. Compare
-PVC names, UIDs, bound PVs, and phases before and after. Recheck media/MMIA
+After rollout, verify the source revision, all eleven HelmRelease conditions,
+zero desired replicas for paused workloads (including operator-managed
+Prometheus/Alertmanager StatefulSets), and zero eligible Kured/node-exporter
+nodes. Compare PVC names, UIDs, bound PVs, and phases before and after. Recheck media/MMIA
 readiness, node CPU requests, and Ceph health.
 
-To restore normal operation after repair, revert the commit titled
-`chore(cluster): reduce optional workloads for two-node operation` and push the
-revert to `main`. Alternatively, remove only the temporary `postRenderers`
-blocks. The original values and all resource declarations remain in place.
+To restore normal operation after repair, revert the commits titled
+`chore(cluster): pause monitoring during reduced-capacity operation` and
+`chore(cluster): reduce optional workloads for two-node operation`, newest first,
+and push the reverts to `main`. Alternatively, remove only the temporary
+`postRenderers` blocks. The original values and all resource declarations remain in place.
 Restore application workloads first if needed; re-enable reboot and upgrade
 automation only when node and storage health have been verified.
 
 References: [Flux Helm post-renderers](https://fluxcd.io/flux/components/helm/helmreleases/#post-renderers)
 and [Kubernetes non-graceful node shutdown](https://kubernetes.io/docs/concepts/cluster-administration/node-shutdown/#non-graceful-node-shutdown).
+Monitoring reconciliation follows the [Prometheus Operator API](https://prometheus-operator.dev/docs/api-reference/api/).
