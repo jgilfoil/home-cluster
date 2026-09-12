@@ -4,6 +4,20 @@ kind: HelmRelease
 metadata:
   name: descheduler
 spec:
+  # Temporary two-node operation; remove this block to restore normal replicas.
+  # Keep the Helm release and all persistent resources installed.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: descheduler
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
   interval: 30m
   chart:
     spec:

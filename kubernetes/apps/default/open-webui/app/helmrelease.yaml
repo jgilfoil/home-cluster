@@ -5,6 +5,29 @@ kind: HelmRelease
 metadata:
   name: &app open-webui
 spec:
+  # Temporary two-node operation; remove this block to restore normal replicas.
+  # Keep the Helm release and all persistent resources installed.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: StatefulSet
+              name: open-webui
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: open-webui-pipelines
+            patch: |-
+              - op: add
+                path: /spec/replicas
+                value: 0
   interval: 30m
   timeout: 15m
   chart:

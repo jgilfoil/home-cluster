@@ -56,6 +56,7 @@ jobs:
           set +e
           docker run --rm \
             --workdir /github/workspace \
+            -e HELM_CACHE_HOME=/tmp/helm-cache \
             -v "${GITHUB_WORKSPACE}:/github/workspace" \
             ghcr.io/allenporter/flux-local:main \
             "${args[@]}" 2>&1 | tee flux-local.log

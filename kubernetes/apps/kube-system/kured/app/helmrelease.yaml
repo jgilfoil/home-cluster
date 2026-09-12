@@ -5,6 +5,20 @@ kind: HelmRelease
 metadata:
   name: kured
 spec:
+  # Temporary two-node operation: prevent automatic reboots while quorum is fragile.
+  # No node has this opt-in label. Remove this block after the third node is healthy.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              group: apps
+              version: v1
+              kind: DaemonSet
+              name: kured
+            patch: |-
+              - op: add
+                path: /spec/template/spec/nodeSelector/maintenance.home.arpa~1reboot-enabled
+                value: "true"
   interval: 5m
   chart:
     spec:
