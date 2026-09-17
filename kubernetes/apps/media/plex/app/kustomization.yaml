@@ -6,3 +6,18 @@ resources:
   - ./pvcs.yaml
   - ./helmrelease.yaml
   - ../../../../templates/volsync
+patches:
+  - target:
+      group: volsync.backube
+      version: v1alpha1
+      kind: ReplicationSource
+    patch: |-
+      - op: replace
+        path: /spec/restic/retain
+        value:
+          last: unlimited
+      # Recovery hold: VolSync 0.12.1 has no prune-disable switch.
+      # 100 years postpones pruning without overflowing its Go duration.
+      - op: replace
+        path: /spec/restic/pruneIntervalDays
+        value: 36500
