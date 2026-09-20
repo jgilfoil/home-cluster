@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: &app indexer
+  labels:
+    app: *app
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: *app
+  template:
+    metadata:
+      labels:
+        app: *app
+    spec:
+      containers:
+        - name: *app
+          image: jgilfoil/mymindinai-indexer:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: indexer-secrets
+                  key: AWS_REGION
+            - name: SQS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: indexer-secrets
+                  key: SQS_URL
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: indexer-secrets
+                  key: DATABASE_URL
+            - name: BATCH_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: indexer-config
+                  key: BATCH_SIZE
+            - name: PREFETCH
+              valueFrom:
+                configMapKeyRef:
+                  name: indexer-config
+                  key: PREFETCH
+            - name: VISIBILITY_EXTENSION
+              valueFrom:
+                configMapKeyRef:
+                  name: indexer-config
+                  key: VISIBILITY_EXTENSION
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: indexer-config
+                  key: LOG_LEVEL
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f "indexer.main"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - pgrep -f "indexer.main"
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+

@@ -1,1 +1,10 @@
+node_modules/
+dist/
+.build/
+__pycache__/
+*.png
+*.jpg
+*.mp4
+.local/
+.env*
 kubeconfig
