@@ -26,6 +26,31 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
+    # Keep public DNSSEC anchors current independently of the gateway image.
+    # The chart includes this ConfigMap in the pod checksum, so updates roll out.
+    configMaps:
+      dnssec-trust-anchors:
+        enabled: true
+        data:
+          trust-anchors.conf: |
+            # IANA root DNSSEC DS trust anchors, verified 2026-10-23.
+            # https://data.iana.org/root-anchors/root-anchors.xml
+            # Verified with IANA's root-anchors.p7s and icannbundle.pem.
+            # Review https://www.iana.org/dnssec/files before future rollovers.
+            # KSK-2017 remains published during the rollover transition.
+            trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D
+            # KSK-2024 signs the root DNSKEY RRset starting 2026-10-11.
+            trust-anchor=.,38696,8,2,683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16
+
+    persistence:
+      dnssec-trust-anchors:
+        enabled: true
+        type: configMap
+        name: '{{ include "bjw-s.common.lib.chart.names.fullname" . }}-dnssec-trust-anchors'
+        mountPath: /usr/share/dnsmasq/trust-anchors.conf
+        subPath: trust-anchors.conf
+        readOnly: true
+
     addons:
       vpn:
         enabled: true
