@@ -10,7 +10,7 @@ spec:
       chart: pod-gateway
       # Upstream `angelnu` Helm repo prunes old chart versions; 6.5.1 is no longer published.
       # Keep this pinned to an available version to avoid HelmChart SourceNotReady.
-      version: 6.6.1
+      version: 7.1.1
       interval: 15m
       sourceRef:
         kind: HelmRepository
