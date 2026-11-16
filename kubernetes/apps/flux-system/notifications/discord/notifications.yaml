@@ -8,7 +8,7 @@ spec:
   secretRef:
     name: discord-flux-alerts-webhook-url
 ---
-apiVersion: notification.toolkit.fluxcd.io/v1beta3
+apiVersion: notification.toolkit.fluxcd.io/v1
 kind: Alert
 metadata:
   name: home-cluster-alerts
